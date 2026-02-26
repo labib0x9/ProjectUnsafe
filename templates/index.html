@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ProjectUnsafe Portal</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232d3436'/%3E%3Cpath d='M16 6l8.66 5v10L16 26l-8.66-5V11L16 6z' fill='none' stroke='%23ff8c00' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ff8c00'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+<!-- ── SECTION 1: LOGIN ── -->
+<section class="login-section">
+  <p class="login-sub">// SECURE ACCESS PORTAL</p>
+  <h1 class="login-title">Welcome to <span>ProjectUnsafe</span></h1>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="openModal('Social Login','btn-s')">Slogin</button>
+    <button class="btn btn-l" onclick="openModal('Lab Login','btn-l')">Llogin</button>
+    <button class="btn btn-a" onclick="openModal('Anon Login','btn-a')">Alogin</button>
+  </div>
+</section>
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <h2 id="modal-title">Login</h2>
+    <label>USERNAME</label>
+    <input type="text" placeholder="enter username" autocomplete="off"/>
+    <label>PASSWORD</label>
+    <input type="password" placeholder="••••••••"/>
+    <button class="modal-btn" onclick="closeModal()">SIGN IN</button>
+  </div>
+</div>
+
+<!-- ── SECTION 2: ABOUT ── -->
+<section class="about-section reveal">
+  <p class="section-label">// What We're Building</p>
+  <h2>A Hands-On Security<br/>Learning Environment</h2>
+  <p>
+    ProjectUnsafe is a controlled, sandboxed environment designed for students, researchers, and administrators
+    to study real-world vulnerabilities in a safe, ethical space. We believe understanding how attacks work
+    is the first step to building robust defenses.
+  </p>
+  <p>
+    From web exploits to low-level memory bugs, each module walks you through the mechanics, the impact,
+    and the mitigation — turning theory into hands-on practice without putting real systems at risk.
+  </p>
+</section>
+
+<!-- ── SECTION 3: TOPIC BOXES ── -->
+<section class="topics-section">
+  <p class="section-label">// Core Topics</p>
+  <h2 class="reveal">What You Will Learn</h2>
+  <div class="boxes">
+
+    {{range .TopicItems}}
+    <a href="{{.TopicUrl}}" style="text-decoration:none;">
+    <div class="{{.BoxTopicReveal}}" style="cursor:pointer;">
+      <span class="box-tag">{{.BoxTag}}</span>
+      <h3>{{.Topic}} <span style="font-size:0.75rem;color:var(--dim);font-weight:400;">→ {{.LabCount}} Labs</span></h3>
+      <p>
+        {{.ShortDescription}}
+      </p>
+    </div>
+    </a>
+    {{end}}
+
+  </div>
+</section>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

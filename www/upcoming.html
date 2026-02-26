@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upcoming — ProjectUnsafe</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232d3436'/%3E%3Cpath d='M16 6l8.66 5v10L16 26l-8.66-5V11L16 6z' fill='none' stroke='%23ff8c00' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ff8c00'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css"/>
+  <style>
+    .upcoming-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      color: var(--dim);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+    .back-link::before { content: '←'; }
+
+    .upcoming-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .upcoming-title {
+      font-size: clamp(3rem, 10vw, 6rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 1.5rem;
+    }
+
+    .upcoming-title span {
+      color: var(--accent);
+    }
+
+    .upcoming-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--dim);
+      letter-spacing: 1px;
+      max-width: 420px;
+      line-height: 1.8;
+    }
+
+    .upcoming-dots {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 3rem;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      opacity: 0.2;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="upcoming-wrap">
+    <a href="/" class="back-link">Back to Topics</a>
+    <p class="upcoming-label">// coming soon</p>
+    <h1 class="upcoming-title">UPCOMING<span>.</span></h1>
+    <p class="upcoming-sub">This module is currently under construction.<br/>Check back soon.</p>
+    <div class="upcoming-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+</body>
+</html>

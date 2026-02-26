@@ -66,6 +66,18 @@
     </div>
     </a>
 
+    {{ranges .TopicItems}}
+    <a href="{{.TopicUrl}}" style="text-decoration:none;">
+    <div class="{{.BoxTopicReveal}}" style="cursor:pointer;">
+      <span class="box-tag">{{.BoxTag}}</span>
+      <h3>{{.Topic}} <span style="font-size:0.75rem;color:var(--dim);font-weight:400;">→ {{.LabCount}}</span></h3>
+      <p>
+        {{.ShortDescription}}
+      </p>
+    </div>
+    </a>
+    {{end}}
+
     <a href="sqli.html" style="text-decoration:none;">
     <div class="box box-sql reveal" style="cursor:pointer;">
       <span class="box-tag">Database Attack</span>

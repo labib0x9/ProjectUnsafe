@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Linux — ProjectUnsafe</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232d3436'/%3E%3Cpath d='M16 6l8.66 5v10L16 26l-8.66-5V11L16 6z' fill='none' stroke='%23ff8c00' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ff8c00'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css"/>
+  <style>
+    :root {
+      --page-accent: var(--accent3);        /* purple #a78bfa */
+      --page-accent-rgb: 167,139,250;
+    }
+
+    .hero {
+      padding: 5rem 2rem 3rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      color: var(--dim);
+      text-decoration: none;
+      margin-bottom: 2.5rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--page-accent); }
+    .back-link::before { content: '←'; }
+
+    .hero .section-label { margin-bottom: 0.8rem; color: var(--page-accent); }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 span { color: var(--page-accent); }
+
+    .desc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2.5rem;
+    }
+    @media (max-width: 600px) { .desc-grid { grid-template-columns: 1fr; } }
+
+    .desc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--page-accent);
+      padding: 1.5rem;
+    }
+    .desc-card h3 {
+      font-size: 0.7rem;
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 3px;
+      color: var(--page-accent);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .desc-card p { font-size: 0.9rem; color: var(--dim); line-height: 1.75; }
+
+    .impact-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.8rem;
+    }
+    .pill {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid rgba(var(--page-accent-rgb), 0.35);
+      color: var(--page-accent);
+      background: rgba(var(--page-accent-rgb), 0.07);
+    }
+
+    .page-divider {
+      max-width: 860px;
+      margin: 0 auto 2rem;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Labs ── */
+    .labs-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 1rem 2rem 6rem;
+    }
+    .labs-section h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .labs-section > p {
+      font-size: 0.85rem;
+      color: var(--dim);
+      margin-bottom: 2rem;
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 1px;
+    }
+
+    .lab-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+      transition: border-color 0.25s;
+    }
+    .lab-card.open { border-color: var(--page-accent); }
+
+    .lab-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 1.5rem;
+      cursor: pointer;
+      user-select: none;
+      gap: 1rem;
+    }
+    .lab-header:hover .lab-title { color: var(--page-accent); }
+
+    .lab-left { display: flex; align-items: center; gap: 1rem; }
+
+    .lab-num {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--page-accent);
+      background: rgba(var(--page-accent-rgb), 0.1);
+      border: 1px solid rgba(var(--page-accent-rgb), 0.25);
+      padding: 0.2rem 0.55rem;
+      min-width: 2.4rem;
+      text-align: center;
+    }
+
+    .lab-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      transition: color 0.2s;
+    }
+
+    .lab-badge {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      padding: 0.18rem 0.55rem;
+      border: 1px solid;
+      text-transform: uppercase;
+    }
+    .badge-easy   { border-color: #4ade80; color: #4ade80; }
+    .badge-medium { border-color: #facc15; color: #facc15; }
+    .badge-hard   { border-color: #f87171; color: #f87171; }
+
+    .lab-chevron {
+      font-size: 1rem;
+      color: var(--dim);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+    .lab-card.open .lab-chevron { transform: rotate(180deg); color: var(--page-accent); }
+
+    .lab-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .lab-card.open .lab-body { max-height: 600px; }
+
+    .lab-body-inner {
+      padding: 0 1.5rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .lab-desc {
+      font-size: 0.88rem;
+      color: var(--dim);
+      line-height: 1.75;
+      margin: 1.2rem 0 1.5rem;
+    }
+
+    .lab-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .lab-btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      padding: 0.6rem 1.4rem;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .lab-btn:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    .btn-start { background: var(--page-accent); color: #000; font-weight: 700; }
+
+    .btn-hint {
+      background: transparent;
+      border: 1px solid var(--dim);
+      color: var(--dim);
+    }
+    .btn-hint:hover { border-color: #fff; color: #fff; }
+
+    .hint-box {
+      display: none;
+      margin-top: 1.2rem;
+      background: rgba(167,139,250,0.07);
+      border: 1px solid rgba(167,139,250,0.25);
+      border-left: 3px solid var(--accent3);
+      padding: 1rem 1.2rem;
+    }
+    .hint-box.visible { display: block; }
+    .hint-box p {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent3);
+      line-height: 1.7;
+    }
+    .hint-box p::before { content: '💡 HINT: '; opacity: 0.6; }
+
+    code {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--page-accent);
+      font-size: 0.85em;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero reveal">
+  <a href="/" class="back-link"> Back to Topics</a>
+  <p class="section-label">// {{.Label}}</p>
+  <h1>{{.Name}}<br/><span>{{.Category}}</span></h1>
+
+  <p style="color:var(--dim);font-size:1rem;line-height:1.8;max-width:680px;">
+    Linux powers the vast majority of servers, cloud infrastructure, embedded devices, and
+    security tooling in the world. Whether you're attacking, defending, or just trying to
+    understand what's happening under the hood — the terminal is your most powerful interface.
+    These labs build the foundational skills every security practitioner needs.
+  </p>
+
+  <div class="desc-grid">
+    <div class="desc-card">
+      <h3>What It Is</h3>
+      <p>
+        Linux is a Unix-like operating system kernel surrounded by a rich ecosystem of tools.
+        From the shell you can navigate the filesystem, manage processes, control network
+        interfaces, inspect running services, and automate tasks with scripts.
+        Security work relies heavily on commands like <strong style="color:#fff">find</strong>,
+        <strong style="color:#fff">grep</strong>, <strong style="color:#fff">netstat</strong>,
+        <strong style="color:#fff">chmod</strong>, <strong style="color:#fff">sudo</strong>,
+        and <strong style="color:#fff">cron</strong> — understanding these is non-negotiable.
+      </p>
+    </div>
+    <div class="desc-card">
+      <h3>Why It Matters</h3>
+      <p>
+        Misconfigured file permissions, world-writable cron jobs, SUID binaries, and weak
+        sudo rules are among the most common real-world privilege escalation vectors on Linux
+        systems. Attackers who land a low-privilege shell routinely escalate to root within
+        minutes by exploiting these misconfigurations. Knowing the OS deeply means you can
+        both find these issues and understand how to fix them.
+      </p>
+    </div>
+  </div>
+
+  <div class="impact-pills">
+    <span class="pill">PRIVILEGE ESCALATION</span>
+    <span class="pill">FILE PERMISSIONS</span>
+    <span class="pill">PROCESS MANAGEMENT</span>
+    <span class="pill">SHELL SCRIPTING</span>
+    <span class="pill">CRON ABUSE</span>
+    <span class="pill">SUID EXPLOITATION</span>
+  </div>
+</section>
+
+<hr class="page-divider"/>
+
+<!-- ── LABS ── -->
+<section class="labs-section">
+  <h2>Labs</h2>
+  <p>// {{len .Labs}} challenges · click to expand · complete in order</p>
+
+  <!-- Lab  -->
+   <!-- {{range $i, $c := .Labs}}
+    <div class="lab-card" id="lab{{add $i 1}}">
+        <div class="lab-header" onclick="toggleLab('lab{{add $i 1}}')">
+        <div class="lab-left">
+            <span class="lab-num">{{$c.Id}}</span>
+            <span class="lab-title">{{$c.Title}}</span>
+            <span class="lab-badge badge-easy">{{$c.Badge}}</span>
+        </div>
+        <span class="lab-chevron">▼</span>
+        </div>
+        <div class="lab-body">
+        <div class="lab-body-inner">
+            <p class="lab-desc">
+            {{$c.Description}}
+            </p>
+            <div class="lab-actions">
+            <button class="lab-btn btn-start" onclick="startLab(1)">▶ START LAB</button>
+            <button class="lab-btn btn-hint" onclick="toggleHint('hint{{add $i 1}}', this)">HINT</button>
+            </div>
+            {{range $j, $h := $c.Hints}}
+            <div class="hint-box" id="hint{{add $i 1}}">
+            <p>{{$h}}</p>
+            </div>
+            {{end}}
+        </div>
+        </div>
+    </div>
+  {{end}} -->
+
+  {{range $i, $c := .Labs}}
+<div class="lab-card" id="lab{{add $i 1}}">
+  <div class="lab-header" onclick="toggleLab('lab{{add $i 1}}')">
+    <div class="lab-left">
+      <span class="lab-num">{{$c.Id}}</span>
+      <span class="lab-title">{{$c.Title}}</span>
+      <span class="lab-badge badge-{{$c.Badge}}">{{$c.Badge}}</span>
+    </div>
+    <span class="lab-chevron">▼</span>
+  </div>
+  <div class="lab-body">
+    <div class="lab-body-inner">
+      <p class="lab-desc">{{$c.Description}}</p>
+      <div class="lab-actions">
+        <button class="lab-btn btn-start" onclick="startLab('{{add $i 1}}')">▶ START LAB</button>
+        <button class="lab-btn btn-hint" onclick="toggleHint('hint{{add $i 1}}-0', this)">HINT</button>
+      </div>
+      {{range $j, $h := $c.Hints}}
+      <div class="hint-box" id="hint{{add $i 1}}-{{$j}}">
+        <p>{{$h}}</p>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</div>
+{{end}}
+
+  <!-- <div class="lab-card" id="lab1">
+    <div class="lab-header" onclick="toggleLab('lab1')">
+      <div class="lab-left">
+        <span class="lab-num">01</span>
+        <span class="lab-title">Filesystem Navigation &amp; File Permissions</span>
+        <span class="lab-badge badge-easy">EASY</span>
+      </div>
+      <span class="lab-chevron">▼</span>
+    </div>
+    <div class="lab-body">
+      <div class="lab-body-inner">
+        <p class="lab-desc">
+          You are dropped into a shell on a Linux machine. A flag is hidden somewhere in
+          the filesystem inside a file called <code>flag.txt</code>. Using only shell commands,
+          locate the file, understand its permissions, and read its contents. Along the way
+          you will encounter files owned by other users and directories you cannot enter —
+          learn to read permission strings and work around restrictions.
+        </p>
+        <div class="lab-actions">
+          <button class="lab-btn btn-start" onclick="startLab(1)">▶ START LAB</button>
+          <button class="lab-btn btn-hint" onclick="toggleHint('hint1', this)">HINT</button>
+        </div>
+        <div class="hint-box" id="hint1">
+          <p>Use <code>find / -name "flag.txt" 2>/dev/null</code> to search the whole filesystem while suppressing permission-denied errors. Once found, use <code>ls -la</code> to check permissions and <code>cat</code> or <code>less</code> to read it.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Lab 2 -->
+  <!-- <div class="lab-card" id="lab2">
+    <div class="lab-header" onclick="toggleLab('lab2')">
+      <div class="lab-left">
+        <span class="lab-num">02</span>
+        <span class="lab-title">SUID Binary Privilege Escalation</span>
+        <span class="lab-badge badge-easy">EASY</span>
+      </div>
+      <span class="lab-chevron">▼</span>
+    </div>
+    <div class="lab-body">
+      <div class="lab-body-inner">
+        <p class="lab-desc">
+          A binary on the system has the SUID bit set and is owned by root. When run by any
+          user it executes with root privileges. Identify this binary, understand why its
+          behaviour is dangerous, and use it to read a file that only root can access.
+          This is one of the most common and classic Linux privilege escalation techniques.
+        </p>
+        <div class="lab-actions">
+          <button class="lab-btn btn-start" onclick="startLab(2)">▶ START LAB</button>
+          <button class="lab-btn btn-hint" onclick="toggleHint('hint2', this)">HINT</button>
+        </div>
+        <div class="hint-box" id="hint2">
+          <p>Find SUID binaries with <code>find / -perm -4000 -type f 2>/dev/null</code>. Check <a href="https://gtfobins.github.io" target="_blank" style="color:inherit">GTFOBins</a> for the binary name — it lists exactly how to exploit common SUID binaries to read files or spawn shells.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Lab 3 -->
+  <!-- <div class="lab-card" id="lab3">
+    <div class="lab-header" onclick="toggleLab('lab3')">
+      <div class="lab-left">
+        <span class="lab-num">03</span>
+        <span class="lab-title">Writable Cron Job Hijacking</span>
+        <span class="lab-badge badge-medium">MEDIUM</span>
+      </div>
+      <span class="lab-chevron">▼</span>
+    </div>
+    <div class="lab-body">
+      <div class="lab-body-inner">
+        <p class="lab-desc">
+          A cron job runs every minute as root, executing a shell script located in
+          <code>/opt/monitor.sh</code>. The script is world-writable. Modify it to add your
+          user to the sudoers file or copy <code>/bin/bash</code> with the SUID bit set —
+          then wait for the cron job to run and collect your root shell.
+        </p>
+        <div class="lab-actions">
+          <button class="lab-btn btn-start" onclick="startLab(3)">▶ START LAB</button>
+          <button class="lab-btn btn-hint" onclick="toggleHint('hint3', this)">HINT</button>
+        </div>
+        <div class="hint-box" id="hint3">
+          <p>Check running cron jobs with <code>cat /etc/crontab</code> and <code>ls -la /etc/cron*</code>. Confirm the script is writable: <code>ls -la /opt/monitor.sh</code>. Append <code>cp /bin/bash /tmp/rootbash; chmod +s /tmp/rootbash</code> to it. After the cron fires, run <code>/tmp/rootbash -p</code>.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Lab 4 -->
+  <!-- <div class="lab-card" id="lab4">
+    <div class="lab-header" onclick="toggleLab('lab4')">
+      <div class="lab-left">
+        <span class="lab-num">04</span>
+        <span class="lab-title">Sudo Misconfiguration &amp; PATH Hijacking</span>
+        <span class="lab-badge badge-hard">HARD</span>
+      </div>
+      <span class="lab-chevron">▼</span>
+    </div>
+    <div class="lab-body">
+      <div class="lab-body-inner">
+        <p class="lab-desc">
+          Your user can run a specific script as root via <code>sudo</code> without a password.
+          The script calls an external command — like <code>curl</code> or <code>python3</code> —
+          using a relative path (no full path specified). By manipulating the <code>$PATH</code>
+          environment variable, plant a malicious binary with the same name in a directory
+          that appears first in the search order, and have it execute when root runs the script.
+        </p>
+        <div class="lab-actions">
+          <button class="lab-btn btn-start" onclick="startLab(4)">▶ START LAB</button>
+          <button class="lab-btn btn-hint" onclick="toggleHint('hint4', this)">HINT</button>
+        </div>
+        <div class="hint-box" id="hint4">
+          <p>Check your sudo rights with <code>sudo -l</code>. Read the allowed script with <code>cat</code> and note which command it calls without a full path. Create a malicious file: <code>echo '#!/bin/bash\nbash' > /tmp/curl && chmod +x /tmp/curl</code>. Then: <code>export PATH=/tmp:$PATH && sudo /path/to/script</code>.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+</section>
+
+<script>
+  function toggleLab(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+  function toggleHint(hintId, btn) {
+    const visible = document.getElementById(hintId).classList.toggle('visible');
+    btn.textContent = visible ? 'HIDE HINT' : 'HINT';
+  }
+  function startLab(num) {
+    alert('Launching Lab ' + num + '...\n(Connect this button to your lab environment URL.)');
+  }
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
