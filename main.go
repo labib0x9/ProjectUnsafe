@@ -170,15 +170,21 @@ func segfaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func linuxHandler(w http.ResponseWriter, r *http.Request) {
-	linuxTmpl.Execute(
-		w,
-		map[string]any{
-			"Label":    LINUX.Label,
-			"Name":     LINUX.Name,
-			"Category": LINUX.Category,
-			"Labs":     LINUX.Labs,
-		},
-	)
+	switch r.Method {
+	case http.MethodGet:
+		linuxTmpl.Execute(
+			w,
+			map[string]any{
+				"Label":    LINUX.Label,
+				"Name":     LINUX.Name,
+				"Category": LINUX.Category,
+				"Labs":     LINUX.Labs,
+			},
+		)
+	case http.MethodPost:
+	default:
+		http.Error(w, "method not allowed", 400)
+	}
 }
 
 func upcomingHandler(w http.ResponseWriter, r *http.Request) {

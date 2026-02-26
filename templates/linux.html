@@ -288,179 +288,32 @@
   <h2>Labs</h2>
   <p>// {{len .Labs}} challenges · click to expand · complete in order</p>
 
-  <!-- Lab  -->
-   <!-- {{range $i, $c := .Labs}}
-    <div class="lab-card" id="lab{{add $i 1}}">
-        <div class="lab-header" onclick="toggleLab('lab{{add $i 1}}')">
-        <div class="lab-left">
-            <span class="lab-num">{{$c.Id}}</span>
-            <span class="lab-title">{{$c.Title}}</span>
-            <span class="lab-badge badge-easy">{{$c.Badge}}</span>
-        </div>
-        <span class="lab-chevron">▼</span>
-        </div>
-        <div class="lab-body">
-        <div class="lab-body-inner">
-            <p class="lab-desc">
-            {{$c.Description}}
-            </p>
-            <div class="lab-actions">
-            <button class="lab-btn btn-start" onclick="startLab(1)">▶ START LAB</button>
-            <button class="lab-btn btn-hint" onclick="toggleHint('hint{{add $i 1}}', this)">HINT</button>
-            </div>
-            {{range $j, $h := $c.Hints}}
-            <div class="hint-box" id="hint{{add $i 1}}">
-            <p>{{$h}}</p>
-            </div>
-            {{end}}
-        </div>
-        </div>
-    </div>
-  {{end}} -->
-
   {{range $i, $c := .Labs}}
-<div class="lab-card" id="lab{{add $i 1}}">
-  <div class="lab-header" onclick="toggleLab('lab{{add $i 1}}')">
-    <div class="lab-left">
-      <span class="lab-num">{{$c.Id}}</span>
-      <span class="lab-title">{{$c.Title}}</span>
-      <span class="lab-badge badge-{{$c.Badge}}">{{$c.Badge}}</span>
+  <div class="lab-card" id="lab{{add $i 1}}">
+    <div class="lab-header" onclick="toggleLab('lab{{add $i 1}}')">
+      <div class="lab-left">
+        <span class="lab-num">{{$c.Id}}</span>
+        <span class="lab-title">{{$c.Title}}</span>
+        <span class="lab-badge badge-{{$c.Badge}}">{{$c.Badge}}</span>
+      </div>
+      <span class="lab-chevron">▼</span>
     </div>
-    <span class="lab-chevron">▼</span>
+    <div class="lab-body">
+      <div class="lab-body-inner">
+        <p class="lab-desc">{{$c.Description}}</p>
+        <div class="lab-actions">
+          <button class="lab-btn btn-start" onclick="startLab('{{add $i 1}}')">▶ START LAB</button>
+          <button class="lab-btn btn-hint" onclick="toggleHint('hint{{add $i 1}}-0', this)">HINT</button>
+        </div>
+        {{range $j, $h := $c.Hints}}
+        <div class="hint-box" id="hint{{add $i 1}}-{{$j}}">
+          <p>{{$h}}</p>
+        </div>
+        {{end}}
+      </div>
+    </div>
   </div>
-  <div class="lab-body">
-    <div class="lab-body-inner">
-      <p class="lab-desc">{{$c.Description}}</p>
-      <div class="lab-actions">
-        <button class="lab-btn btn-start" onclick="startLab('{{add $i 1}}')">▶ START LAB</button>
-        <button class="lab-btn btn-hint" onclick="toggleHint('hint{{add $i 1}}-0', this)">HINT</button>
-      </div>
-      {{range $j, $h := $c.Hints}}
-      <div class="hint-box" id="hint{{add $i 1}}-{{$j}}">
-        <p>{{$h}}</p>
-      </div>
-      {{end}}
-    </div>
-  </div>
-</div>
-{{end}}
-
-  <!-- <div class="lab-card" id="lab1">
-    <div class="lab-header" onclick="toggleLab('lab1')">
-      <div class="lab-left">
-        <span class="lab-num">01</span>
-        <span class="lab-title">Filesystem Navigation &amp; File Permissions</span>
-        <span class="lab-badge badge-easy">EASY</span>
-      </div>
-      <span class="lab-chevron">▼</span>
-    </div>
-    <div class="lab-body">
-      <div class="lab-body-inner">
-        <p class="lab-desc">
-          You are dropped into a shell on a Linux machine. A flag is hidden somewhere in
-          the filesystem inside a file called <code>flag.txt</code>. Using only shell commands,
-          locate the file, understand its permissions, and read its contents. Along the way
-          you will encounter files owned by other users and directories you cannot enter —
-          learn to read permission strings and work around restrictions.
-        </p>
-        <div class="lab-actions">
-          <button class="lab-btn btn-start" onclick="startLab(1)">▶ START LAB</button>
-          <button class="lab-btn btn-hint" onclick="toggleHint('hint1', this)">HINT</button>
-        </div>
-        <div class="hint-box" id="hint1">
-          <p>Use <code>find / -name "flag.txt" 2>/dev/null</code> to search the whole filesystem while suppressing permission-denied errors. Once found, use <code>ls -la</code> to check permissions and <code>cat</code> or <code>less</code> to read it.</p>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-  <!-- Lab 2 -->
-  <!-- <div class="lab-card" id="lab2">
-    <div class="lab-header" onclick="toggleLab('lab2')">
-      <div class="lab-left">
-        <span class="lab-num">02</span>
-        <span class="lab-title">SUID Binary Privilege Escalation</span>
-        <span class="lab-badge badge-easy">EASY</span>
-      </div>
-      <span class="lab-chevron">▼</span>
-    </div>
-    <div class="lab-body">
-      <div class="lab-body-inner">
-        <p class="lab-desc">
-          A binary on the system has the SUID bit set and is owned by root. When run by any
-          user it executes with root privileges. Identify this binary, understand why its
-          behaviour is dangerous, and use it to read a file that only root can access.
-          This is one of the most common and classic Linux privilege escalation techniques.
-        </p>
-        <div class="lab-actions">
-          <button class="lab-btn btn-start" onclick="startLab(2)">▶ START LAB</button>
-          <button class="lab-btn btn-hint" onclick="toggleHint('hint2', this)">HINT</button>
-        </div>
-        <div class="hint-box" id="hint2">
-          <p>Find SUID binaries with <code>find / -perm -4000 -type f 2>/dev/null</code>. Check <a href="https://gtfobins.github.io" target="_blank" style="color:inherit">GTFOBins</a> for the binary name — it lists exactly how to exploit common SUID binaries to read files or spawn shells.</p>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-  <!-- Lab 3 -->
-  <!-- <div class="lab-card" id="lab3">
-    <div class="lab-header" onclick="toggleLab('lab3')">
-      <div class="lab-left">
-        <span class="lab-num">03</span>
-        <span class="lab-title">Writable Cron Job Hijacking</span>
-        <span class="lab-badge badge-medium">MEDIUM</span>
-      </div>
-      <span class="lab-chevron">▼</span>
-    </div>
-    <div class="lab-body">
-      <div class="lab-body-inner">
-        <p class="lab-desc">
-          A cron job runs every minute as root, executing a shell script located in
-          <code>/opt/monitor.sh</code>. The script is world-writable. Modify it to add your
-          user to the sudoers file or copy <code>/bin/bash</code> with the SUID bit set —
-          then wait for the cron job to run and collect your root shell.
-        </p>
-        <div class="lab-actions">
-          <button class="lab-btn btn-start" onclick="startLab(3)">▶ START LAB</button>
-          <button class="lab-btn btn-hint" onclick="toggleHint('hint3', this)">HINT</button>
-        </div>
-        <div class="hint-box" id="hint3">
-          <p>Check running cron jobs with <code>cat /etc/crontab</code> and <code>ls -la /etc/cron*</code>. Confirm the script is writable: <code>ls -la /opt/monitor.sh</code>. Append <code>cp /bin/bash /tmp/rootbash; chmod +s /tmp/rootbash</code> to it. After the cron fires, run <code>/tmp/rootbash -p</code>.</p>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-  <!-- Lab 4 -->
-  <!-- <div class="lab-card" id="lab4">
-    <div class="lab-header" onclick="toggleLab('lab4')">
-      <div class="lab-left">
-        <span class="lab-num">04</span>
-        <span class="lab-title">Sudo Misconfiguration &amp; PATH Hijacking</span>
-        <span class="lab-badge badge-hard">HARD</span>
-      </div>
-      <span class="lab-chevron">▼</span>
-    </div>
-    <div class="lab-body">
-      <div class="lab-body-inner">
-        <p class="lab-desc">
-          Your user can run a specific script as root via <code>sudo</code> without a password.
-          The script calls an external command — like <code>curl</code> or <code>python3</code> —
-          using a relative path (no full path specified). By manipulating the <code>$PATH</code>
-          environment variable, plant a malicious binary with the same name in a directory
-          that appears first in the search order, and have it execute when root runs the script.
-        </p>
-        <div class="lab-actions">
-          <button class="lab-btn btn-start" onclick="startLab(4)">▶ START LAB</button>
-          <button class="lab-btn btn-hint" onclick="toggleHint('hint4', this)">HINT</button>
-        </div>
-        <div class="hint-box" id="hint4">
-          <p>Check your sudo rights with <code>sudo -l</code>. Read the allowed script with <code>cat</code> and note which command it calls without a full path. Create a malicious file: <code>echo '#!/bin/bash\nbash' > /tmp/curl && chmod +x /tmp/curl</code>. Then: <code>export PATH=/tmp:$PATH && sudo /path/to/script</code>.</p>
-        </div>
-      </div>
-    </div>
-  </div> -->
+  {{end}}
 
 </section>
 
