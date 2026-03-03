@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/static/style.css"/>
   <style>
     :root {
-      --page-accent: var(--accent3);        /* purple #a78bfa */
+      --page-accent: var(--accent3);
       --page-accent-rgb: 167,139,250;
     }
 
@@ -171,7 +171,7 @@
     .lab-card.open .lab-chevron { transform: rotate(180deg); color: var(--page-accent); }
 
     .lab-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-    .lab-card.open .lab-body { max-height: 600px; }
+    .lab-card.open .lab-body { max-height: 1000px; } /* increased from 600px */
 
     .lab-body-inner {
       padding: 0 1.5rem 1.5rem;
@@ -185,7 +185,7 @@
       margin: 1.2rem 0 1.5rem;
     }
 
-    .lab-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .lab-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
 
     .lab-btn {
       font-family: 'Share Tech Mono', monospace;
@@ -206,6 +206,57 @@
       color: var(--dim);
     }
     .btn-hint:hover { border-color: #fff; color: #fff; }
+
+    .btn-reset      { background: #facc15; color: #000; font-weight: 700; }
+    .btn-terminate  { background: #f87171; color: #000; font-weight: 700; }
+
+    .lab-url-copy {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      width: 100%;
+      background: rgba(var(--page-accent-rgb), 0.07);
+      border: 1px solid rgba(var(--page-accent-rgb), 0.25);
+      padding: 0.6rem 1rem;
+    }
+
+    .lab-url-text {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--page-accent);
+      flex: 1;
+      word-break: break-all;
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid rgba(var(--page-accent-rgb), 0.5);
+      color: var(--page-accent);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .lab-url-link {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 1.5px;
+      color: var(--page-accent);
+      background: rgba(var(--page-accent-rgb), 0.1);
+      border: 1px solid rgba(var(--page-accent-rgb), 0.35);
+      padding: 0.6rem 1.2rem;
+      text-decoration: none;
+      display: inline-block;
+      word-break: break-all;
+      width: 100%;
+      margin-bottom: 0.6rem;
+    }
+    .lab-url-link:hover { background: rgba(var(--page-accent-rgb), 0.2); }
+
+    .lab-running-actions {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+    }
 
     .hint-box {
       display: none;
@@ -301,15 +352,22 @@
     <div class="lab-body">
       <div class="lab-body-inner">
         <p class="lab-desc">{{$c.Description}}</p>
-        <div class="lab-actions">
+        
+        <!-- <div class="lab-actions" id="actions{{add $i 1}}">
           <button class="lab-btn btn-start" onclick="startLab('{{add $i 1}}')">▶ START LAB</button>
           <button class="lab-btn btn-hint" onclick="toggleHint('hint{{add $i 1}}-0', this)">HINT</button>
+        </div> -->
+        <div class="lab-actions" id="actions{{add $i 1}}">
+          <button class="lab-btn btn-start" onclick="startLab('{{add $i 1}}')">▶ START LAB</button>
         </div>
+        <button class="lab-btn btn-hint" onclick="toggleHint('hint{{add $i 1}}-0', this)">HINT</button>
+        
         {{range $j, $h := $c.Hints}}
-        <div class="hint-box" id="hint{{add $i 1}}-{{$j}}">
-          <p>{{$h}}</p>
-        </div>
+          <div class="hint-box" id="hint{{add $i 1}}-{{$j}}">
+            <p>{{$h}}</p>
+          </div>
         {{end}}
+
       </div>
     </div>
   </div>
@@ -321,13 +379,85 @@
   function toggleLab(id) {
     document.getElementById(id).classList.toggle('open');
   }
+
   function toggleHint(hintId, btn) {
     const visible = document.getElementById(hintId).classList.toggle('visible');
     btn.textContent = visible ? 'HIDE HINT' : 'HINT';
   }
-  function startLab(num) {
-    alert('Launching Lab ' + num + '...\n(Connect this button to your lab environment URL.)');
+
+  async function startLab(labId) {
+    // lab_id + user info
+    const payload = { 
+      lab_id: parseInt(labId),
+      flag: 1
+    };
+
+    try {
+      const response = await fetch(window.location.href, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Lab launched:", data);
+
+        const actionsDiv = document.getElementById('actions' + labId);
+        actionsDiv.innerHTML = `
+          <!-- <a class="lab-url-link" href="${data.lab_url}" target="_blank">🔗 ${data.lab_url}</a> -->
+          <div class="lab-url-copy">
+            <span class="lab-url-text" id="url${labId}">${data.lab_url}</span>
+            <button class="lab-btn btn-copy" onclick="copyUrl(${labId})">⎘ COPY</button>
+          </div>
+
+          <div class="lab-running-actions">
+            <button class="lab-btn btn-reset"     onclick="resetLab(${labId})">↺ RESET</button>
+            <button class="lab-btn btn-terminate" onclick="terminateLab(${labId})">■ TERMINATE</button>
+          </div>
+        `;
+      } else {
+        console.error("Failed to launch lab:", response.status);
+      }
+    } catch (err) {
+      console.error("Error launching lab:", err);
+    }
   }
+
+  async function resetLab(labId) {
+    // TODO: wire up your reset endpoint
+    console.log("Resetting lab", labId);
+    // lab_id + user info
+    const payload = { 
+      lab_id: parseInt(labId),
+      flag: 2
+    };
+  }
+
+  async function terminateLab(labId) {
+    // TODO: wire up your terminate endpoint
+    console.log("Terminating lab", labId);
+    // lab_id + user info
+    const payload = { 
+      lab_id: parseInt(labId),
+      flag: 3
+    };
+
+    const actionsDiv = document.getElementById('actions' + labId);
+    actionsDiv.innerHTML = `
+      <button class="lab-btn btn-start" onclick="startLab(${labId})">▶ START LAB</button>
+    `;
+  }
+
+  function copyUrl(labId) {
+    const url = document.getElementById('url' + labId).textContent;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.querySelector(`#actions${labId} .btn-copy`);
+      btn.textContent = '✓ COPIED';
+      setTimeout(() => btn.textContent = '⎘ COPY', 2000);
+    });
+  }
+
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1 });

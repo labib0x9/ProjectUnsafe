@@ -1,18 +1,27 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"log/slog"
 	"net/http"
 )
 
+// status = 0 (inactive), 1 (active)
 type Lab struct {
 	Id          int
 	Title       string
 	Badge       string
 	Description string
 	Hints       []string
+	Status      bool
+}
+
+// flag = 1 (start), 2 (reset), 3 (terminate)
+type LabHandler struct {
+	Id   int `json:"lab_id"`
+	Flag int `json:"flag"`
 }
 
 // var LinuxLabs []Lab
@@ -81,22 +90,18 @@ func init() {
 	AllTopics = append(AllTopics, []Topic{xss, sqli, segfault, linux}...)
 
 	linuxLab1 := Lab{
-		Id:    1,
-		Title: "Filesystem Navigation &amp; File Permissions",
-		Badge: "EASY",
-		Description: `You are dropped into a shell on a Linux machine. A flag is hidden somewhere in
-          the filesystem inside a file called <code>flag.txt</code>. Using only shell commands,
-          locate the file, understand its permissions, and read its contents. Along the way
-          you will encounter files owned by other users and directories you cannot enter —
-          learn to read permission strings and work around restrictions.`,
+		Id:          1,
+		Title:       "Connect using ssh",
+		Badge:       "EASY",
+		Description: `You just need to connect using ssh`,
 		Hints: []string{
-			`Use <code>find / -name "flag.txt" 2>/dev/null</code> to search the whole filesystem while suppressing permission-denied errors. Once found, use <code>ls -la</code> to check permissions and <code>cat</code> or <code>less</code> to read it.`,
+			`Use ssh to connect.. ssh runs on port 22`,
 		},
 	}
 
 	linuxLab2 := Lab{
-		Id:    1,
-		Title: "Filesystem Navigation &amp; File Permissions",
+		Id:    2,
+		Title: "Filesystem Navigation and File Permissions",
 		Badge: "EASY",
 		Description: `You are dropped into a shell on a Linux machine. A flag is hidden somewhere in
           the filesystem inside a file called <code>flag.txt</code>. Using only shell commands,
@@ -109,17 +114,17 @@ func init() {
 	}
 
 	linuxLab3 := Lab{
-		Id:    1,
-		Title: "Filesystem Navigation &amp; File Permissions",
-		Badge: "EASY",
-		Description: `You are dropped into a shell on a Linux machine. A flag is hidden somewhere in
-          the filesystem inside a file called <code>flag.txt</code>. Using only shell commands,
-          locate the file, understand its permissions, and read its contents. Along the way
-          you will encounter files owned by other users and directories you cannot enter —
-          learn to read permission strings and work around restrictions.`,
-		Hints: []string{
-			`Use <code>find / -name "flag.txt" 2>/dev/null</code> to search the whole filesystem while suppressing permission-denied errors. Once found, use <code>ls -la</code> to check permissions and <code>cat</code> or <code>less</code> to read it.`,
-		},
+		// Id:    1,
+		// Title: "Filesystem Navigation &amp; File Permissions",
+		// Badge: "EASY",
+		// Description: `You are dropped into a shell on a Linux machine. A flag is hidden somewhere in
+		//   the filesystem inside a file called <code>flag.txt</code>. Using only shell commands,
+		//   locate the file, understand its permissions, and read its contents. Along the way
+		//   you will encounter files owned by other users and directories you cannot enter —
+		//   learn to read permission strings and work around restrictions.`,
+		// Hints: []string{
+		// 	`Use <code>find / -name "flag.txt" 2>/dev/null</code> to search the whole filesystem while suppressing permission-denied errors. Once found, use <code>ls -la</code> to check permissions and <code>cat</code> or <code>less</code> to read it.`,
+		// },
 	}
 
 	LINUX = TopicPage{
@@ -182,6 +187,38 @@ func linuxHandler(w http.ResponseWriter, r *http.Request) {
 			},
 		)
 	case http.MethodPost:
+		// linuxTmpl.Execute(
+		// 	w,
+		// 	map[string]any{
+		// 		"Label":    LINUX.Label,
+		// 		"Name":     LINUX.Name,
+		// 		"Category": LINUX.Category,
+		// 		"Labs":     LINUX.Labs,
+		// 	},
+		// )
+
+		var labHndlr LabHandler
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&labHndlr); err != nil {
+			slog.Error("JSON Decoding failed")
+			http.Error(w, "give proper json", 400)
+			return
+		}
+		slog.Info("Lab Id", "lab_id", labHndlr.Id)
+
+		switch labHndlr.Flag {
+		case 1: // Start
+			encoder := json.NewEncoder(w)
+			encoder.Encode(
+				map[string]string{
+					"lab_url": "http://127.0.0.1:8383",
+				},
+			)
+		case 2: // Reset
+		case 3: // Terminate
+		default:
+			http.Error(w, "Flag not allowed", 400)
+		}
 	default:
 		http.Error(w, "method not allowed", 400)
 	}
@@ -210,4 +247,7 @@ func main() {
 
 	slog.Info("Starting Server at http://127.0.0.1:8080/")
 	log.Fatal(http.ListenAndServe(":8080", mux))
+
+	// how does this even works ???
+	// http.ListenAndServeTLS()
 }
