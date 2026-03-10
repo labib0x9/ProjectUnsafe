@@ -1,6 +1,33 @@
 # ProjectUnsafe
 
-A simple playground for Linux Playground..
+A simple playground for Linux Playground, each lab is sandboxed using a container.
+
+---
+
+# Features
+
+- Anonymous login, a temporary account for only 30minutes lifecycle.
+- Realtime lab communication via websocket and xterm.js.
+- Lab starts in container. Reset the container and terminate the lab.
+
+---
+
+# Architecture
+
+    [Client] -> [Frontend] -> [Backend] -> [Client]
+                                    |
+                                    V
+    --------------------------------------------------------
+    |                  [BACKEND]                           |
+    |                                                      |
+    |                                                      |
+    |                                                      |
+    |                                                      |
+    |                                                      |
+    |                                                      |
+    |                                                      |
+    |                                                      |
+    --------------------------------------------------------
 
 ---
 
@@ -21,6 +48,7 @@ POST /auth/login
 POST /auth/signup
 POST /auth/anonymous
 POST /auth/reset-password
+POST /auth/logout
 ```
 
 ## Playground APIs

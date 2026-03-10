@@ -34,7 +34,49 @@ The container runs a minimal Debian image with sshd configured and ready.`,
 		Tags:          []string{"ssh", "networking", "linux"},
 	}
 
-	model.LabList = append(model.LabList, lab1)
+	lab2 := model.Lab{
+		Id:          "lab-fd-hunt-01",
+		Title:       "FD Hunt",
+		Difficulty:  "easy",
+		Category:    "linux",
+		Description: "Learn to find opened fd by a process.",
+		LongDescription: `In this lab you will practice the fundamentals of /proc folder. You will: 
+- Find opened file by monitoring /proc folder
+- No need to use lsof tool
+- Submit how many files are opened by the process.
+
+The container runs a minimal Debian image with sshd configured and ready.`,
+		Hints: []string{
+			"You will need pid of that process",
+			"monitor /proc/<pid> directory",
+		},
+		Completions:   0,
+		EstimatedTime: "45 min",
+		Tags:          []string{"ssh", "process", "linux"},
+	}
+
+	lab3 := model.Lab{
+		Id:          "lab-process-01",
+		Title:       "Process Status",
+		Difficulty:  "easy",
+		Category:    "linux",
+		Description: "Learn to Monitor process status.",
+		LongDescription: `In this lab you will practice theof /proc folder. You will: 
+- Find opened file by monitoring /proc folder
+- No need to use lsof tool
+- You will submit how much ram, cpu usage by the process
+
+The container runs a minimal Debian image with sshd configured and ready.`,
+		Hints: []string{
+			"You will need pid of that process",
+			"monitor /proc/<pid> directory",
+		},
+		Completions:   0,
+		EstimatedTime: "45 min",
+		Tags:          []string{"ssh", "process", "linux"},
+	}
+
+	model.LabList = append(model.LabList, lab1, lab2, lab3)
 }
 
 func Server() {
@@ -50,10 +92,11 @@ func Server() {
 	// mux.Handle("GET /lab/hints?labId=${labId}", http.HandlerFunc())
 
 	// Auth APIs
-	// mux.Handle("POST /auth/login", http.HandlerFunc())
 	// mux.Handle("POST /auth/signup", http.HandlerFunc())
-	mux.Handle("POST /auth/anonymous", http.HandlerFunc(handlers.AnonLogin))
+	// mux.Handle("POST /auth/login", http.HandlerFunc())
 	// mux.Handle("POST /auth/reset-password", http.HandlerFunc())
+	mux.Handle("POST /auth/anonymous", http.HandlerFunc(handlers.AnonLogin))
+	// mux.Handle("POST /auth/logout", http.HandlerFunc())
 
 	// Playground APIs
 	// mux.Handle("GET /problems", http.HandlerFunc())
@@ -62,8 +105,8 @@ func Server() {
 	// mux.Handle("POST /code/run", http.HandlerFunc())
 
 	// Admin APIs
-	// mux.Handle("GET /admin/containers", http.HandlerFunc())
 	// mux.Handle("GET /admin/users", http.HandlerFunc())
+	// mux.Handle("GET /admin/containers", http.HandlerFunc())
 	// mux.Handle("POST /admin/terminate", http.HandlerFunc())
 
 	globalRouter := global_router.NewGlobalRouter(mux)
