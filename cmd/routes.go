@@ -40,7 +40,6 @@ func initRoutes(mux *http.ServeMux, manager *middleware.Manager) {
 			http.HandlerFunc(handlers.TerminateLab),
 		),
 	)
-	// mux.Handle("GET /lab/hints?labId=${labId}", http.HandlerFunc(handlers.GetHintByLabID))
 
 	// Auth APIs
 	// mux.Handle("POST /auth/signup", http.HandlerFunc())
@@ -61,7 +60,7 @@ func initRoutes(mux *http.ServeMux, manager *middleware.Manager) {
 
 	// Playground APIs
 	// mux.Handle("GET /problems", http.HandlerFunc())
-	// mux.Handle("GET /problem/${id}", http.HandlerFunc())
+	// mux.Handle("GET /problem/{id}", http.HandlerFunc())
 	// mux.Handle("POST /code/run-custom", http.HandlerFunc())
 	// mux.Handle("POST /code/run", http.HandlerFunc())
 
