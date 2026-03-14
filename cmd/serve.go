@@ -1,14 +1,17 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
-	"log/slog"
 	"net/http"
 
+	"github.com/labib0x9/ProjectUnsafe/config"
 	"github.com/labib0x9/ProjectUnsafe/middleware"
 )
 
 func Server() {
+
+	cnf := config.GetConfig()
 
 	manager := middleware.NewManager()
 	manager.Use(
@@ -22,6 +25,6 @@ func Server() {
 
 	initRoutes(mux, manager)
 
-	slog.Info("Starting Server at http://127.0.0.1:8080/")
+	fmt.Printf("Starting Server at http://127.0.0.1:%d/\n", cnf.Port)
 	log.Fatal(http.ListenAndServe(":8080", wrappedMux))
 }

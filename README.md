@@ -65,3 +65,7 @@ GET /admin/containers
 GET /admin/users
 POST /admin/terminate
 ```
+
+```
+cp .env.example .env
+```
