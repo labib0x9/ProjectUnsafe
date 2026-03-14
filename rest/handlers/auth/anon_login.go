@@ -1,4 +1,4 @@
-package handlers
+package auth
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/labib0x9/ProjectUnsafe/utils"
 )
 
-func AnonLogin(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) AnonLogin(w http.ResponseWriter, r *http.Request) {
 	newUser := model.User{
 		Role:       "anon",
 		Username:   "Guest-",
@@ -33,7 +33,4 @@ func AnonLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.SendJson(w, data)
-}
-
-func Logout(w http.ResponseWriter, r *http.Request) {
 }

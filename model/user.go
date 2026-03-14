@@ -8,10 +8,10 @@ import (
 
 // admin = Admin (ROOT), user = Non-admin, anon = Guest user
 type User struct {
-	Role       string `json:"role"`
-	Username   string `json:"username"`
+	Role       string
+	Username   string
 	Password   string
-	UUID       uuid.UUID `json:"id"`
+	UUID       uuid.UUID
 	CreatedAt  time.Time
 	ExpiredAt  time.Time
 	SolvedLabs []string

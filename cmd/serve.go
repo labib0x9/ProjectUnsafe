@@ -1,30 +1,22 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-
 	"github.com/labib0x9/ProjectUnsafe/config"
-	"github.com/labib0x9/ProjectUnsafe/middleware"
+	"github.com/labib0x9/ProjectUnsafe/rest"
+	"github.com/labib0x9/ProjectUnsafe/rest/handlers/auth"
+	"github.com/labib0x9/ProjectUnsafe/rest/handlers/lab"
 )
 
-func Server() {
-
+func Serve() {
 	cnf := config.GetConfig()
 
-	manager := middleware.NewManager()
-	manager.Use(
-		middleware.Cors,
-		middleware.Preflight,
-		middleware.Logger,
+	labHandler := lab.NewHandler()
+	authHandler := auth.NewHandler()
+
+	server := rest.NewServer(
+		labHandler,
+		authHandler,
 	)
 
-	mux := http.NewServeMux()
-	wrappedMux := manager.WrapMux(mux)
-
-	initRoutes(mux, manager)
-
-	fmt.Printf("Starting Server at http://127.0.0.1:%d/\n", cnf.Port)
-	log.Fatal(http.ListenAndServe(":8080", wrappedMux))
+	server.Start(cnf)
 }
