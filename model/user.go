@@ -17,11 +17,4 @@ type User struct {
 	SolvedLabs []string
 }
 
-// // guest user
-// type AnonUser struct {
-// }
-
 var UserList []User
-
-// var AnonUserList []AnonUser
-var Count uint64 = 0

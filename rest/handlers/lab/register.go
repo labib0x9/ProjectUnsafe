@@ -30,6 +30,14 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 	)
 
 	mux.Handle(
+		"POST /lab/update",
+		manager.With(
+			http.HandlerFunc(h.UpdateLab),
+			h.middlewares.Auth,
+		),
+	)
+
+	mux.Handle(
 		"POST /lab/delete",
 		manager.With(
 			http.HandlerFunc(h.GetLabByID),
