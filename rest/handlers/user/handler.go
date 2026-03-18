@@ -1,6 +1,6 @@
-package admin
+package user
 
-import "github.com/labib0x9/ProjectUnsafe/rest/middleware"
+import middleware "github.com/labib0x9/ProjectUnsafe/rest/middleware"
 
 type Handler struct {
 	middlewares middleware.Middlewares

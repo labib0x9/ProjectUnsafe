@@ -9,8 +9,9 @@ import (
 )
 
 type Config struct {
-	Version string
-	Port    int
+	Version   string
+	Port      int
+	JwtSecret string
 }
 
 var configuration *Config
@@ -35,9 +36,15 @@ func loadConfig() {
 		log.Fatalln(err)
 	}
 
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		log.Fatalln("")
+	}
+
 	configuration = &Config{
-		Version: version,
-		Port:    port,
+		Version:   version,
+		Port:      port,
+		JwtSecret: jwtSecret,
 	}
 }
 

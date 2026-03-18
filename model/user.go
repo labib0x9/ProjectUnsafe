@@ -8,6 +8,7 @@ import (
 
 // admin = Admin (ROOT), user = Non-admin, anon = Guest user
 type User struct {
+	Id         int
 	Role       string
 	Username   string
 	Password   string
