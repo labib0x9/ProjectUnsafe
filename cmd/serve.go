@@ -12,10 +12,8 @@ import (
 func Serve() {
 	cnf := config.GetConfig()
 
-	dbConn, err := db.NewConnection(cnf)
-	if err != nil {
-		panic(err)
-	}
+	dbConn := db.SetupAndConnection(cnf.DBConfig)
+	defer dbConn.Close()
 
 	labRepo := repo.NewLabRepo(dbConn)
 	authRepo := repo.NewAuthRepository(dbConn)

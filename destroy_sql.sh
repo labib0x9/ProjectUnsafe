@@ -9,8 +9,8 @@ set -e
 DB_SUPERUSER="labib"
 DB_SUPERDB="postgres"
 
-DB_USER="tempuser1"
-DB_NAME="tempdb1"
+DB_USER="projectunsafe"
+DB_NAME="projectunsafe"
 
 # 1. Terminate active connections (required)
 psql -v ON_ERROR_STOP=1 -U $DB_SUPERUSER -d $DB_SUPERDB -c "

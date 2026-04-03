@@ -8,12 +8,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type Config struct {
-	Version   string
-	Port      int
-	Service   string
-	JwtSecret string
-
+type DbConfig struct {
 	DBUser    string
 	DBPass    string
 	DBPort    string
@@ -23,6 +18,15 @@ type Config struct {
 
 	DBSuperUser string
 	DBSuperDB   string
+}
+
+type Config struct {
+	Version   string
+	Port      int
+	Service   string
+	JwtSecret string
+
+	DBConfig *DbConfig
 }
 
 var configuration *Config
@@ -98,18 +102,20 @@ func loadConfig() {
 	}
 
 	configuration = &Config{
-		Version:     version,
-		Port:        port,
-		JwtSecret:   jwtSecret,
-		Service:     serviceName,
-		DBUser:      dbUser,
-		DBPass:      dbPass,
-		DBAddr:      dbAddr,
-		DBPort:      dbPort,
-		DBName:      dbName,
-		DBSslMode:   dbSSlmode,
-		DBSuperUser: dbSuperUser,
-		DBSuperDB:   dbSuperDb,
+		Version:   version,
+		Port:      port,
+		JwtSecret: jwtSecret,
+		Service:   serviceName,
+		DBConfig: &DbConfig{
+			DBUser:      dbUser,
+			DBPass:      dbPass,
+			DBAddr:      dbAddr,
+			DBPort:      dbPort,
+			DBName:      dbName,
+			DBSslMode:   dbSSlmode,
+			DBSuperUser: dbSuperUser,
+			DBSuperDB:   dbSuperDb,
+		},
 	}
 }
 
