@@ -6,7 +6,7 @@ import (
 
 // admin = Admin (ROOT), user = Non-admin, anon = Guest user
 type User struct {
-	Id           int64     `db:"id"`
+	Id           int64     `json:"id" db:"id"`
 	Username     string    `json:"username"      db:"username"`
 	Fullname     string    `json:"fullname"      db:"fullname"`
 	Email        string    `json:"email"         db:"email"`

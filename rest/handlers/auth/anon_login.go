@@ -20,7 +20,7 @@ func (h *Handler) AnonLogin(w http.ResponseWriter, r *http.Request) {
 	newUser.Username += utils.Generate_Random_ID().String()
 	newUser.Email = newUser.Username + "@gmail.com"
 
-	_, err := h.authRepo.AnonLogin(newUser)
+	_, err := h.authRepo.Create(newUser)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		slog.Error("Create() failed", "error", err.Error())

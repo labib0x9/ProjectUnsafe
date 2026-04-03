@@ -6,7 +6,8 @@ import (
 )
 
 type AuthRepository interface {
-	AnonLogin(user model.User) (model.User, error)
+	GetByEmail(email string) (model.User, error)
+	Create(user model.User) (model.User, error)
 }
 
 type authRepo struct {
@@ -19,12 +20,20 @@ func NewAuthRepository(dbConn *sqlx.DB) AuthRepository {
 	}
 }
 
-func (r *authRepo) AnonLogin(user model.User) (model.User, error) {
-	query := `
-        insert into users (username, email, role, is_verified, deleted_at)
-        values (:username, :email, :role, :is_verified, :deleted_at)
-        returning *
-    `
+func (r *authRepo) GetByEmail(email string) (model.User, error) {
+	query := `select * from users where email = $1`
+	var user model.User
+	if err := r.dbConn.Get(&user, query, email); err != nil {
+		return model.User{}, err
+	}
+	return user, nil
+}
+
+func (r *authRepo) Create(user model.User) (model.User, error) {
+	query := `insert into 
+		users(username, fullname, email, password_hash, is_verified, role, profile_pic)
+		values(:username, :fullname, :email, :password_hash, :is_verified, :role, :profile_pic)
+	`
 
 	rows, err := r.dbConn.NamedQuery(query, user)
 	if err != nil {

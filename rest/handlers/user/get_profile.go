@@ -2,6 +2,9 @@ package user
 
 import (
 	"net/http"
+	"strconv"
+
+	"github.com/labib0x9/ProjectUnsafe/utils"
 )
 
 type ProfileResp struct {
@@ -10,21 +13,17 @@ type ProfileResp struct {
 }
 
 func (h *Handler) GetProfile(w http.ResponseWriter, r *http.Request) {
-	// id, _ := strconv.Atoi(r.PathValue("id"))
-	// var profile ProfileResp
-	// found := false
-	// for _, p := range model.UserList {
-	// 	if p.Id == id {
-	// 		profile.Username = p.Username
-	// 		found = true
-	// 		break
-	// 	}
-	// }
+	id, _ := strconv.Atoi(r.PathValue("id"))
+	found, err := h.userRepo.GetProfile(id)
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-	// if found == false {
-	// 	http.Error(w, "User not found", 404)
-	// 	return
-	// }
+	profile := ProfileResp{
+		Username: found.Username,
+		Photo:    found.ProfilePic,
+	}
 
-	// utils.SendJson(w, profile, http.StatusOK)
+	utils.SendJson(w, profile, http.StatusOK)
 }
