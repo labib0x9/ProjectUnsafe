@@ -18,6 +18,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		"GET /labs/{id}",
 		manager.With(
 			http.HandlerFunc(h.GetLabID),
+			h.middlewares.Auth,
 		),
 	)
 
@@ -26,6 +27,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		manager.With(
 			http.HandlerFunc(h.Create),
 			h.middlewares.Auth,
+			h.middlewares.Admin,
 		),
 	)
 
@@ -34,6 +36,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		manager.With(
 			http.HandlerFunc(h.Update),
 			h.middlewares.Auth,
+			h.middlewares.Admin,
 		),
 	)
 
@@ -42,6 +45,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		manager.With(
 			http.HandlerFunc(h.Delete),
 			h.middlewares.Auth,
+			h.middlewares.Admin,
 		),
 	)
 
@@ -49,6 +53,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		"POST /labs/start",
 		manager.With(
 			http.HandlerFunc(h.Start),
+			h.middlewares.Auth,
 		),
 	)
 
@@ -56,6 +61,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		"POST /labs/reset'",
 		manager.With(
 			http.HandlerFunc(h.Reset),
+			h.middlewares.Auth,
 		),
 	)
 
@@ -63,6 +69,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		"POST /labs/terminate'",
 		manager.With(
 			http.HandlerFunc(h.Terminate),
+			h.middlewares.Auth,
 		),
 	)
 }
