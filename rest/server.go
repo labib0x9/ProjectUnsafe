@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/labib0x9/ProjectUnsafe/config"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/auth"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/lab"
@@ -14,6 +15,7 @@ import (
 type Server struct {
 	LabHandler  *lab.Handler
 	AuthHandler *auth.Handler
+	dbConn      *sqlx.DB
 }
 
 func NewServer(

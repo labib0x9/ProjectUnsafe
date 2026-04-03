@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -10,27 +11,23 @@ import (
 
 func (h *Handler) AnonLogin(w http.ResponseWriter, r *http.Request) {
 	newUser := model.User{
-		Role:       "anon",
 		Username:   "Guest-",
-		Password:   "",
-		SolvedLabs: []string{},
-		UUID:       utils.Generate_Random_ID(),
-		CreatedAt:  time.Now(),
-		ExpiredAt:  time.Now().Add(30 * time.Minute),
+		Email:      "",
+		Role:       "anon",
+		IsVerified: true,
+		DeletedAt:  time.Now().Add(30 * time.Minute),
 	}
-	newUser.Username += newUser.UUID.String()
+	newUser.Username += utils.Generate_Random_ID().String()
+	newUser.Email = newUser.Username + "@gmail.com"
 
-	model.UserList = append(model.UserList, newUser)
-
-	data := map[string]any{
-		"user": map[string]any{
-			"id":          newUser.UUID,
-			"username":    newUser.Username,
-			"isAdmin":     false,
-			"isAnonymous": true,
-		},
-		"token": "token-blabla",
+	_, err := h.authRepo.AnonLogin(newUser)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		slog.Error("Create() failed", "error", err.Error())
+		return
 	}
 
-	utils.SendJson(w, data)
+	utils.SendJson(w, map[string]any{
+		"token": "123455",
+	}, http.StatusCreated)
 }

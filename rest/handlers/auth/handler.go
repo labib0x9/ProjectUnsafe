@@ -1,7 +1,11 @@
 package auth
 
-type Handler struct{}
+import "github.com/labib0x9/ProjectUnsafe/repo"
 
-func NewHandler() *Handler {
-	return &Handler{}
+type Handler struct {
+	authRepo repo.AuthRepository
+}
+
+func NewHandler(authRepo repo.AuthRepository) *Handler {
+	return &Handler{authRepo: authRepo}
 }

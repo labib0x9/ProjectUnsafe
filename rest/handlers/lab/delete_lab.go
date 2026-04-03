@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/labib0x9/ProjectUnsafe/model"
+	"github.com/labib0x9/ProjectUnsafe/utils"
 )
 
 type LabRequest struct {
 	Id string
 }
 
-func (h *Handler) DeleteLab(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	if r.Header.Get("Role") != "admin" {
 		http.Error(w, "Bad request", http.StatusForbidden)
@@ -25,12 +25,10 @@ func (h *Handler) DeleteLab(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tempLabList := make([]model.Lab, 0, len(model.LabList))
-	for _, lab := range model.LabList {
-		if lab.Id == newLab.Id {
-			continue
-		}
-		tempLabList = append(tempLabList, lab)
+	if err := h.labRepo.Delete(newLab.Id); err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
-	model.LabList = tempLabList
+
+	utils.SendJson(w, "Deleted", http.StatusOK)
 }

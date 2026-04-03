@@ -10,59 +10,59 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 	mux.Handle(
 		"GET /labs",
 		manager.With(
-			http.HandlerFunc(h.GetAllLabs),
+			http.HandlerFunc(h.List),
 		),
 	)
 
 	mux.Handle(
-		"GET /lab/{id}",
+		"GET /labs/{id}",
 		manager.With(
-			http.HandlerFunc(h.GetLabByID),
+			http.HandlerFunc(h.GetLabID),
 		),
 	)
 
 	mux.Handle(
-		"POST /lab/create",
+		"POST /labs/create",
 		manager.With(
-			http.HandlerFunc(h.CreateLab),
+			http.HandlerFunc(h.Create),
 			h.middlewares.Auth,
 		),
 	)
 
 	mux.Handle(
-		"POST /lab/update",
+		"POST /labs/update",
 		manager.With(
-			http.HandlerFunc(h.UpdateLab),
+			http.HandlerFunc(h.Update),
 			h.middlewares.Auth,
 		),
 	)
 
 	mux.Handle(
-		"POST /lab/delete",
+		"POST /labs/delete",
 		manager.With(
-			http.HandlerFunc(h.GetLabByID),
+			http.HandlerFunc(h.Delete),
 			h.middlewares.Auth,
 		),
 	)
 
 	mux.Handle(
-		"POST /lab/start",
+		"POST /labs/start",
 		manager.With(
-			http.HandlerFunc(h.StartLab),
+			http.HandlerFunc(h.Start),
 		),
 	)
 
 	mux.Handle(
-		"POST /lab/reset'",
+		"POST /labs/reset'",
 		manager.With(
-			http.HandlerFunc(h.ResetLab),
+			http.HandlerFunc(h.Reset),
 		),
 	)
 
 	mux.Handle(
-		"POST /lab/terminate'",
+		"POST /labs/terminate'",
 		manager.With(
-			http.HandlerFunc(h.TerminateLab),
+			http.HandlerFunc(h.Terminate),
 		),
 	)
 }

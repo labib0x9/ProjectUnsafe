@@ -3,25 +3,15 @@ package lab
 import (
 	"net/http"
 
-	"github.com/labib0x9/ProjectUnsafe/model"
 	"github.com/labib0x9/ProjectUnsafe/utils"
 )
 
-func (h *Handler) GetLabByID(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetLabID(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
-	var lab model.Lab
-	found := false
-	for _, tempLab := range model.LabList {
-		if tempLab.Id == id {
-			lab = tempLab
-			found = true
-			break
-		}
-	}
-
-	if found == false {
-		w.WriteHeader(404)
+	lab, err := h.labRepo.Get(id)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	utils.SendJson(w, lab)
+	utils.SendJson(w, lab, http.StatusOK)
 }

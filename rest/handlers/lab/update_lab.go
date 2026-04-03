@@ -5,9 +5,10 @@ import (
 	"net/http"
 
 	"github.com/labib0x9/ProjectUnsafe/model"
+	"github.com/labib0x9/ProjectUnsafe/utils"
 )
 
-func (h *Handler) UpdateLab(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 
 	if r.Header.Get("Role") != "admin" {
 		http.Error(w, "Bad request", http.StatusForbidden)
@@ -21,10 +22,10 @@ func (h *Handler) UpdateLab(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for idx, lab := range model.LabList {
-		if lab.Id == newLab.Id {
-			model.LabList[idx] = newLab
-			break
-		}
+	if err := h.labRepo.Update(newLab); err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
+
+	utils.SendJson(w, "Updated", http.StatusOK)
 }

@@ -1,16 +1,16 @@
 package model
 
-type Lab struct {
-	Id              string   `json:"id"`
-	Title           string   `json:"title"`
-	Difficulty      string   `json:"difficulty"`
-	Category        string   `json:"category"`
-	Description     string   `json:"description"`
-	LongDescription string   `json:"longDescription"`
-	Hints           []string `json:"hints"`
-	Completions     int      `json:"completions"`
-	EstimatedTime   string   `json:"estimatedTime"`
-	Tags            []string `json:"tags"`
-}
+import "github.com/lib/pq"
 
-var LabList []Lab
+type Lab struct {
+	Id              int            `db:"id"`
+	LabName         string         `json:"labname" db:"labname"`
+	Title           string         `json:"title" db:"title"`
+	Difficulty      string         `json:"difficulty" db:"difficulty"`
+	Category        string         `json:"category" db:"category"`
+	Description     string         `json:"description" db:"description"`
+	LongDescription string         `json:"long_description" db:"long_description"`
+	Hints           pq.StringArray `json:"hints" db:"hints"`
+	Completions     int            `json:"completions" db:"total_solved"`
+	ContainerId     string         `db:"container_id"`
+}

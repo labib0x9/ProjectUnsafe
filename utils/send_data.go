@@ -5,9 +5,13 @@ import (
 	"net/http"
 )
 
-func SendJson(w http.ResponseWriter, v any) {
+func SendJson(w http.ResponseWriter, v any, statusCode int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(v); err != nil {
-		w.WriteHeader(500)
+		http.Error(w, "Internal Server Error-Encode.", http.StatusInternalServerError)
+		return
 	}
 }

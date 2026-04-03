@@ -2,15 +2,17 @@ package lab
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/labib0x9/ProjectUnsafe/model"
+	"github.com/labib0x9/ProjectUnsafe/utils"
 )
 
-func (h *Handler) CreateLab(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	if r.Header.Get("Role") != "admin" {
-		http.Error(w, "Bad request", http.StatusForbidden)
+		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
 	}
 
@@ -20,6 +22,13 @@ func (h *Handler) CreateLab(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad request", http.StatusBadRequest)
 		return
 	}
-	model.LabList = append(model.LabList, newLab)
-	w.WriteHeader(http.StatusCreated)
+
+	newLab, err := h.labRepo.Create(newLab)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		slog.Error("Create() failed", "error", err.Error())
+		return
+	}
+
+	utils.SendJson(w, newLab, http.StatusCreated)
 }
