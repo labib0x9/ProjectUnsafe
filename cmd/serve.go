@@ -27,8 +27,8 @@ func Serve() {
 
 	labHandler := lab.NewHandler(labRepo, middlewares)
 	authHandler := auth.NewHandler(authRepo, middlewares)
-	adminHandler := admin.NewHandler(adminRepo)
-	userHandler := user.NewHandler(userRepo)
+	adminHandler := admin.NewHandler(adminRepo, middlewares)
+	userHandler := user.NewHandler(userRepo, middlewares)
 
 	server := rest.NewServer(
 		labHandler,

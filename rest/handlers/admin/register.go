@@ -12,6 +12,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		manager.With(
 			http.HandlerFunc(h.ListUsers),
 			h.middlewares.Auth,
+			h.middlewares.Admin,
 		),
 	)
 
@@ -20,6 +21,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		manager.With(
 			http.HandlerFunc(h.list_container),
 			h.middlewares.Auth,
+			h.middlewares.Admin,
 		),
 	)
 
@@ -28,6 +30,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		manager.With(
 			http.HandlerFunc(h.terminate_container),
 			h.middlewares.Auth,
+			h.middlewares.Admin,
 		),
 	)
 }

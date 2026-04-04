@@ -10,6 +10,6 @@ type Handler struct {
 	adminRepo   repo.AdminRepository
 }
 
-func NewHandler(adminRepo repo.AdminRepository) *Handler {
-	return &Handler{adminRepo: adminRepo}
+func NewHandler(adminRepo repo.AdminRepository, middlewares *middleware.Middlewares) *Handler {
+	return &Handler{adminRepo: adminRepo, middlewares: middlewares}
 }
