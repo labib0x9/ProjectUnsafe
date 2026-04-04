@@ -10,14 +10,16 @@ import (
 )
 
 func (h *Handler) AnonLogin(w http.ResponseWriter, r *http.Request) {
+	deletedAt := time.Now().Add(30 * time.Minute)
 	newUser := model.User{
 		Username:   "Guest-",
 		Email:      "",
 		Role:       "anon",
 		IsVerified: true,
-		DeletedAt:  time.Now().Add(30 * time.Minute),
+		DeletedAt:  &deletedAt,
 	}
-	newUser.Username += utils.Generate_Random_ID().String()
+	newUser.Username += utils.GenerateRandomID().String()
+	newUser.Fullname = newUser.Username
 	newUser.Email = newUser.Username + "@gmail.com"
 
 	_, err := h.authRepo.Create(newUser)
@@ -27,7 +29,21 @@ func (h *Handler) AnonLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	payload := utils.Payload{
+		Sub:       newUser.Username,
+		FirstName: newUser.Fullname,
+		Role:      newUser.Role,
+	}
+	
+	token := utils.CreateJWT(h.middlewares.Cnf.JwtSecret, payload)
+	if token == "" {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		slog.Error("JWT Token create failed", "error", "empty token")
+		return
+	}
+
 	utils.SendJson(w, map[string]any{
-		"token": "123455",
+		"token":    token,
+		"username": newUser.Username,
 	}, http.StatusCreated)
 }

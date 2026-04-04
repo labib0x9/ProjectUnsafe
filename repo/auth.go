@@ -31,8 +31,8 @@ func (r *authRepo) GetByEmail(email string) (model.User, error) {
 
 func (r *authRepo) Create(user model.User) (model.User, error) {
 	query := `insert into 
-		users(username, fullname, email, password_hash, is_verified, role, profile_pic)
-		values(:username, :fullname, :email, :password_hash, :is_verified, :role, :profile_pic)
+		users(username, fullname, email, password_hash, is_verified, role, profile_pic, deleted_at)
+		values(:username, :fullname, :email, :password_hash, :is_verified, :role, :profile_pic, :deleted_at)
 	`
 
 	rows, err := r.dbConn.NamedQuery(query, user)

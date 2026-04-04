@@ -58,7 +58,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 	)
 
 	mux.Handle(
-		"POST /labs/reset'",
+		"POST /labs/reset",
 		manager.With(
 			http.HandlerFunc(h.Reset),
 			h.middlewares.Auth,
@@ -66,7 +66,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 	)
 
 	mux.Handle(
-		"POST /labs/terminate'",
+		"POST /labs/terminate",
 		manager.With(
 			http.HandlerFunc(h.Terminate),
 			h.middlewares.Auth,

@@ -10,12 +10,6 @@ import (
 )
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
-
-	if r.Header.Get("Role") != "admin" {
-		http.Error(w, "Forbidden", http.StatusForbidden)
-		return
-	}
-
 	var newLab model.Lab
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&newLab); err != nil {

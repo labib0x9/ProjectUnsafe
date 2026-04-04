@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bytes"
 	"log"
 	"os"
 	"strconv"
@@ -21,10 +22,12 @@ type DbConfig struct {
 }
 
 type Config struct {
-	Version   string
-	Port      int
-	Service   string
-	JwtSecret string
+	Version    string
+	Port       int
+	Service    string
+	JwtSecret  []byte
+	BcryptCost int
+	HashPepper string
 
 	DBConfig *DbConfig
 }
@@ -51,8 +54,23 @@ func loadConfig() {
 		log.Fatalln(err)
 	}
 
-	jwtSecret := os.Getenv("JWT_SECRET")
-	if jwtSecret == "" {
+	jwtSecret := []byte(os.Getenv("JWT_SECRET"))
+	if bytes.Equal(jwtSecret, []byte("")) == true {
+		log.Fatalln("")
+	}
+
+	pepper := os.Getenv("HASH_PEPPER")
+	if pepper == "" {
+		log.Fatalln("")
+	}
+
+	bcryptCostStr := os.Getenv("BCRYPT_COST")
+	if bcryptCostStr == "" {
+		log.Fatalln("")
+	}
+
+	bcryptCost, err := strconv.Atoi(bcryptCostStr)
+	if err != nil {
 		log.Fatalln("")
 	}
 
@@ -102,10 +120,12 @@ func loadConfig() {
 	}
 
 	configuration = &Config{
-		Version:   version,
-		Port:      port,
-		JwtSecret: jwtSecret,
-		Service:   serviceName,
+		Version:    version,
+		Port:       port,
+		Service:    serviceName,
+		JwtSecret:  jwtSecret,
+		BcryptCost: bcryptCost,
+		HashPepper: pepper,
 		DBConfig: &DbConfig{
 			DBUser:      dbUser,
 			DBPass:      dbPass,

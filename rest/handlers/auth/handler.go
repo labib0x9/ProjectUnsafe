@@ -1,11 +1,18 @@
 package auth
 
-import "github.com/labib0x9/ProjectUnsafe/repo"
+import (
+	"github.com/labib0x9/ProjectUnsafe/repo"
+	middleware "github.com/labib0x9/ProjectUnsafe/rest/middleware"
+)
 
 type Handler struct {
-	authRepo repo.AuthRepository
+	middlewares *middleware.Middlewares
+	authRepo    repo.AuthRepository
 }
 
-func NewHandler(authRepo repo.AuthRepository) *Handler {
-	return &Handler{authRepo: authRepo}
+func NewHandler(authRepo repo.AuthRepository, middlewares *middleware.Middlewares) *Handler {
+	return &Handler{
+		authRepo:    authRepo,
+		middlewares: middlewares,
+	}
 }

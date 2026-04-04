@@ -1,4 +1,4 @@
-package db
+package postgres
 
 import (
 	"database/sql"
@@ -15,8 +15,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Setup(cnf *config.DbConfig) error {
-	superDb, err := NewSuperConnection(cnf)
+func (p *PostgreSQL) Setup(cnf *config.DbConfig) error {
+	superDb, err := p.NewSuperConnection(cnf)
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func Setup(cnf *config.DbConfig) error {
 		return err
 	}
 
-	if err := runMigrations(cnf); err != nil {
+	if err := p.runMigrations(cnf); err != nil {
 		return fmt.Errorf("migrations: %w", err)
 	}
 
@@ -71,7 +71,7 @@ func Setup(cnf *config.DbConfig) error {
 	return nil
 }
 
-func runMigrations(cnf *config.DbConfig) error {
+func (p *PostgreSQL) runMigrations(cnf *config.DbConfig) error {
 	dbSource := newConnectionString(cnf)
 
 	appDB, err := sql.Open("postgres", dbSource)
@@ -96,12 +96,12 @@ func runMigrations(cnf *config.DbConfig) error {
 	return nil
 }
 
-func SetupAndConnection(cnf *config.DbConfig) *sqlx.DB {
-	if err := Setup(cnf); err != nil {
+func (p *PostgreSQL) SetupAndConnection(cnf *config.DbConfig) *sqlx.DB {
+	if err := p.Setup(cnf); err != nil {
 		panic(err)
 	}
 
-	dbConn, err := NewConnection(cnf)
+	dbConn, err := p.NewConnection(cnf)
 	if err != nil {
 		panic(err)
 	}

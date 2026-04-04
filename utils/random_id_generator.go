@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func Generate_Random_ID() uuid.UUID {
+func GenerateRandomID() uuid.UUID {
 	id, err := uuid.NewRandom()
 	if err != nil {
 		panic(err)

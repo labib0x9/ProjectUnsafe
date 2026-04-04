@@ -26,7 +26,7 @@ func (r *adminRepo) TerminateContainer() {}
 
 func (r *adminRepo) ListUser() ([]model.User, error) {
 	var users []model.User
-	query := `select * from labs`
+	query := `select * from users`
 	if err := r.db.Select(&users, query); err != nil {
 		return []model.User{}, err
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 type Handler struct {
-	middlewares middleware.Middlewares
+	middlewares *middleware.Middlewares
 	userRepo    repo.UserRepository
 }
 

@@ -1,42 +1,38 @@
 package middleware
 
 import (
+	"context"
+	"log/slog"
 	"net/http"
+	"strings"
+
+	"github.com/labib0x9/ProjectUnsafe/utils"
 )
+
+type contextKey struct{}
+
+var claimKey = contextKey{}
 
 func (m *Middlewares) Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// h := r.Header.Get("Authorization")
-		// if h == "" {
-		// 	return
-		// }
+		h := r.Header.Get("Authorization")
+		if h == "" || !strings.HasPrefix(h, "Bearer") {
+			slog.Error("Auth Middleware", "error", "Bad Authorization Header "+h)
+			http.Error(w, "Bad Authorization Header", http.StatusBadRequest)
+			return
+		}
 
-		// hArr := strings.Split(h, " ")
-		// if len(hArr) != 2 {
-		// 	return
-		// }
+		tokenStr := strings.TrimPrefix(h, "Bearer ")
+		data, ok := utils.VerifyJWT(m.Cnf.JwtSecret, tokenStr)
+		if ok == false {
+			http.Error(w, "Invalid token", 400)
+			slog.Error("Auth middleware", "error", "Invalid token")
+			return
+		}
 
-		// accessToken := hArr[1]
-		// tokenParts := strings.Split(accessToken, ".")
-		// if len(tokenParts) != 3 {
-		// 	return
-		// }
+		// fmt.Println("Auth Middleware", data.Role)
 
-		// jwtHeader := tokenParts[0]
-		// jwtPayload := tokenParts[1]
-		// signature := tokenParts[2]
-
-		// msg := []byte(jwtHeader + "." + jwtPayload)
-		// newH := hmac.New(sha256.New, []byte(m.cnf.JwtSecret))
-		// newH.Write(msg)
-		// newSignature := string(newH.Sum(nil))
-
-		// slog.Info("AuthMiddleware", "newSginature=", newSignature, " ,signature=", signature)
-
-		// if newSignature != signature {
-		// 	return
-		// }
-
-		next.ServeHTTP(w, r)
+		ctx := context.WithValue(r.Context(), claimKey, data)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

@@ -1,11 +1,15 @@
 package admin
 
-import "github.com/labib0x9/ProjectUnsafe/rest/middleware"
+import (
+	"github.com/labib0x9/ProjectUnsafe/repo"
+	"github.com/labib0x9/ProjectUnsafe/rest/middleware"
+)
 
 type Handler struct {
-	middlewares middleware.Middlewares
+	middlewares *middleware.Middlewares
+	adminRepo   repo.AdminRepository
 }
 
-func NewHandler() *Handler {
-	return &Handler{}
+func NewHandler(adminRepo repo.AdminRepository) *Handler {
+	return &Handler{adminRepo: adminRepo}
 }

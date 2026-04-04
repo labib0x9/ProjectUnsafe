@@ -6,12 +6,13 @@ import (
 )
 
 type Handler struct {
-	middlewares middleware.Middlewares
+	middlewares *middleware.Middlewares
 	labRepo     repo.LabRepository
 }
 
-func NewHandler(labRepo repo.LabRepository) *Handler {
+func NewHandler(labRepo repo.LabRepository, middlewares *middleware.Middlewares) *Handler {
 	return &Handler{
-		labRepo: labRepo,
+		labRepo:     labRepo,
+		middlewares: middlewares,
 	}
 }

@@ -7,24 +7,32 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/labib0x9/ProjectUnsafe/config"
+	"github.com/labib0x9/ProjectUnsafe/rest/handlers/admin"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/auth"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/lab"
+	"github.com/labib0x9/ProjectUnsafe/rest/handlers/user"
 	middleware "github.com/labib0x9/ProjectUnsafe/rest/middleware"
 )
 
 type Server struct {
-	LabHandler  *lab.Handler
-	AuthHandler *auth.Handler
-	dbConn      *sqlx.DB
+	LabHandler   *lab.Handler
+	AuthHandler  *auth.Handler
+	AdminHandler *admin.Handler
+	UserHandler  *user.Handler
+	dbConn       *sqlx.DB
 }
 
 func NewServer(
 	LabHandler *lab.Handler,
 	AuthHandler *auth.Handler,
+	AdminHandler *admin.Handler,
+	UserHandler *user.Handler,
 ) *Server {
 	return &Server{
-		LabHandler:  LabHandler,
-		AuthHandler: AuthHandler,
+		LabHandler:   LabHandler,
+		AuthHandler:  AuthHandler,
+		AdminHandler: AdminHandler,
+		UserHandler:  UserHandler,
 	}
 }
 
@@ -41,6 +49,8 @@ func (s *Server) Start(cnf *config.Config) {
 
 	s.AuthHandler.RegisterRoutes(mux, manager)
 	s.LabHandler.RegisterRoutes(mux, manager)
+	s.AdminHandler.RegisterRoutes(mux, manager)
+	s.UserHandler.RegisterRoutes(mux, manager)
 
 	fmt.Printf("Starting Server at http://127.0.0.1:%d/\n", cnf.Port)
 	log.Fatal(http.ListenAndServe(":8080", wrappedMux))
