@@ -6,7 +6,10 @@ import (
 	middleware "github.com/labib0x9/ProjectUnsafe/rest/middleware"
 )
 
-func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager) {
+func (h *Handler) RegisterRoutes(
+	mux *http.ServeMux,
+	manager *middleware.Manager,
+) {
 	mux.Handle(
 		"POST /auth/signup",
 		manager.With(
@@ -14,12 +17,12 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		),
 	)
 
-	// mux.Handle(
-	// 	"GET /auth/verify/{token}",
-	// 	manager.With(
-	// 		http.HandlerFunc(),
-	// 	),
-	// )
+	mux.Handle(
+		"GET /auth/verify/{token}",
+		manager.With(
+			http.HandlerFunc(h.Verify),
+		),
+	)
 
 	mux.Handle(
 		"POST /auth/login",
@@ -34,13 +37,6 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 			http.HandlerFunc(h.Reset),
 		),
 	)
-
-	// mux.Handle(
-	// 	"POST /auth/anonymous",
-	// 	manager.With(
-	// 		http.HandlerFunc(h.AnonLogin),
-	// 	),
-	// )
 
 	mux.Handle(
 		"POST /auth/logout",

@@ -10,7 +10,10 @@ type Handler struct {
 	authRepo    repo.AuthRepository
 }
 
-func NewHandler(authRepo repo.AuthRepository, middlewares *middleware.Middlewares) *Handler {
+func NewHandler(
+	authRepo repo.AuthRepository,
+	middlewares *middleware.Middlewares,
+) *Handler {
 	return &Handler{
 		authRepo:    authRepo,
 		middlewares: middlewares,

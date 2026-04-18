@@ -44,7 +44,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 		Email:        req.Email,
 		PasswordHash: passHash,
 		Role:         req.Role,
-		IsVerified:   func(role string) bool { return role == "admin" }(req.Role),
+		IsVerified:   false,
 	}
 
 	if _, err := h.authRepo.Create(newUser); err != nil {
@@ -52,5 +52,8 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 		slog.Error("Signup()", "db operation failed", err.Error())
 		return
 	}
+
+	// send verification
+
 	utils.SendJson(w, "created user", http.StatusCreated)
 }
