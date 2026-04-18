@@ -21,6 +21,12 @@ type DbConfig struct {
 	DBSuperDB   string
 }
 
+type RedisConfig struct {
+	Addr string
+	Pass string
+	User string
+}
+
 type Config struct {
 	Version    string
 	Port       int
@@ -29,24 +35,25 @@ type Config struct {
 	BcryptCost int
 	HashPepper string
 
-	DBConfig *DbConfig
+	DBConfig    *DbConfig
+	RedisConfig *RedisConfig
 }
 
 var configuration *Config
 
 func loadConfig() {
 	if err := godotenv.Load(".env"); err != nil {
-		log.Fatalln(err)
+		log.Panic(err)
 	}
 
 	version := os.Getenv("VERSION")
 	if version == "" {
-		log.Fatalln("")
+		log.Panic("VERSION")
 	}
 
 	portS := os.Getenv("PORT")
 	if portS == "" {
-		log.Fatalln("")
+		log.Panic("PORT")
 	}
 
 	port, err := strconv.Atoi(portS)
@@ -56,68 +63,83 @@ func loadConfig() {
 
 	jwtSecret := []byte(os.Getenv("JWT_SECRET"))
 	if bytes.Equal(jwtSecret, []byte("")) == true {
-		log.Fatalln("")
+		log.Panic("JWT_SECRET")
 	}
 
 	pepper := os.Getenv("HASH_PEPPER")
 	if pepper == "" {
-		log.Fatalln("")
+		log.Panic("HASH_PEPPER")
 	}
 
 	bcryptCostStr := os.Getenv("BCRYPT_COST")
 	if bcryptCostStr == "" {
-		log.Fatalln("")
+		log.Panic("BCRYPT_COST")
 	}
 
 	bcryptCost, err := strconv.Atoi(bcryptCostStr)
 	if err != nil {
-		log.Fatalln("")
+		log.Panic(err)
 	}
 
 	serviceName := os.Getenv("SERVICE_NAME")
 	if serviceName == "" {
-		log.Fatalln("")
+		log.Panic("SERVICE_NAME")
 	}
 
 	dbUser := os.Getenv("DB_USER")
 	if dbUser == "" {
-		log.Fatalln("")
+		log.Panic("DB_USER")
 	}
 
 	dbPass := os.Getenv("DB_PASSWORD")
 	if dbPass == "" {
-		log.Fatalln("")
+		log.Panic("DB_PASSWORD")
 	}
 
 	dbPort := os.Getenv("DB_PORT")
 	if dbPort == "" {
-		log.Fatalln("")
+		log.Panic("DB_PORT")
 	}
 
 	dbAddr := os.Getenv("DB_ADDRESS")
 	if dbAddr == "" {
-		log.Fatalln("")
+		log.Panic("DB_ADDRESS")
 	}
 
 	dbName := os.Getenv("DB_NAME")
 	if dbName == "" {
-		log.Fatalln("")
+		log.Panic("DB_NAME")
 	}
 
 	dbSSlmode := os.Getenv("DB_SSLMODE")
 	if dbSSlmode == "" {
-		log.Fatalln("")
+		log.Panic("DB_SSLMODE")
 	}
 
 	dbSuperUser := os.Getenv("DB_SUPERUSER")
 	if dbSSlmode == "" {
-		log.Fatalln("")
+		log.Panic("DB_SUPERUSER")
 	}
 
 	dbSuperDb := os.Getenv("DB_SUPERDB")
 	if dbSSlmode == "" {
-		log.Fatalln("")
+		log.Panic("DB_SUPERDB")
 	}
+
+	redisAddr := os.Getenv("REDIS_ADDR")
+	if redisAddr == "" {
+		log.Panic("REDIS_ADDR")
+	}
+
+	// redisUser := os.Getenv("REDIS_USER")
+	// if redisUser == "" {
+	// 	log.Panic("REDIS_USER")
+	// }
+
+	// redisPass := os.Getenv("REDIS_PASS")
+	// if redisPass == "" {
+	// 	log.Panic("REDIS_PASS")
+	// }
 
 	configuration = &Config{
 		Version:    version,
@@ -135,6 +157,11 @@ func loadConfig() {
 			DBSslMode:   dbSSlmode,
 			DBSuperUser: dbSuperUser,
 			DBSuperDB:   dbSuperDb,
+		},
+		RedisConfig: &RedisConfig{
+			Addr: redisAddr,
+			// User: redisUser,
+			// Pass: redisPass,
 		},
 	}
 }

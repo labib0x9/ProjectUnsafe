@@ -7,6 +7,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/labib0x9/ProjectUnsafe/config"
+	"github.com/labib0x9/ProjectUnsafe/infra/cache/redis"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/admin"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/auth"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/lab"
@@ -37,11 +38,17 @@ func NewServer(
 }
 
 func (s *Server) Start(cnf *config.Config) {
+	redisClient := redis.Setup(cnf.RedisConfig)
+	defer redisClient.Close()
+
+	rateLimiter := middleware.NewRateLimiter(redisClient, 2, 1)
+
 	manager := middleware.NewManager()
 	manager.Use(
 		middleware.Cors,
 		middleware.Preflight,
 		middleware.Logger,
+		rateLimiter.Limit(),
 	)
 
 	mux := http.NewServeMux()
