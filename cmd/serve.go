@@ -7,7 +7,6 @@ import (
 	"github.com/labib0x9/ProjectUnsafe/rest"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/admin"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/auth"
-	"github.com/labib0x9/ProjectUnsafe/rest/handlers/lab"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/user"
 	"github.com/labib0x9/ProjectUnsafe/rest/middleware"
 )
@@ -18,20 +17,17 @@ func Serve() {
 	dbConn := postgres.New().SetupAndConnection(cnf.DBConfig)
 	defer dbConn.Close()
 
-	labRepo := repo.NewLabRepo(dbConn)
 	authRepo := repo.NewAuthRepository(dbConn)
 	adminRepo := repo.NewAdminRepository(dbConn)
 	userRepo := repo.NewUserRepository(dbConn)
 
 	middlewares := middleware.NewMiddlewares(cnf)
 
-	labHandler := lab.NewHandler(labRepo, middlewares)
 	authHandler := auth.NewHandler(authRepo, middlewares)
 	adminHandler := admin.NewHandler(adminRepo, middlewares)
 	userHandler := user.NewHandler(userRepo, middlewares)
 
 	server := rest.NewServer(
-		labHandler,
 		authHandler,
 		adminHandler,
 		userHandler,

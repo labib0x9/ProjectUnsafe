@@ -15,22 +15,4 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 			h.middlewares.Admin,
 		),
 	)
-
-	mux.Handle(
-		"GET /admin/containers",
-		manager.With(
-			http.HandlerFunc(h.list_container),
-			h.middlewares.Auth,
-			h.middlewares.Admin,
-		),
-	)
-
-	mux.Handle(
-		"POST /admin/terminate",
-		manager.With(
-			http.HandlerFunc(h.terminate_container),
-			h.middlewares.Auth,
-			h.middlewares.Admin,
-		),
-	)
 }

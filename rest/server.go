@@ -10,13 +10,11 @@ import (
 	"github.com/labib0x9/ProjectUnsafe/infra/cache/redis"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/admin"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/auth"
-	"github.com/labib0x9/ProjectUnsafe/rest/handlers/lab"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/user"
 	middleware "github.com/labib0x9/ProjectUnsafe/rest/middleware"
 )
 
 type Server struct {
-	LabHandler   *lab.Handler
 	AuthHandler  *auth.Handler
 	AdminHandler *admin.Handler
 	UserHandler  *user.Handler
@@ -24,13 +22,11 @@ type Server struct {
 }
 
 func NewServer(
-	LabHandler *lab.Handler,
 	AuthHandler *auth.Handler,
 	AdminHandler *admin.Handler,
 	UserHandler *user.Handler,
 ) *Server {
 	return &Server{
-		LabHandler:   LabHandler,
 		AuthHandler:  AuthHandler,
 		AdminHandler: AdminHandler,
 		UserHandler:  UserHandler,
@@ -55,7 +51,6 @@ func (s *Server) Start(cnf *config.Config) {
 	wrappedMux := manager.WrapMux(mux)
 
 	s.AuthHandler.RegisterRoutes(mux, manager)
-	s.LabHandler.RegisterRoutes(mux, manager)
 	s.AdminHandler.RegisterRoutes(mux, manager)
 	s.UserHandler.RegisterRoutes(mux, manager)
 

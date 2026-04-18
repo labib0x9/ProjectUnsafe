@@ -42,7 +42,7 @@ ProjectPDF is a API service that accepts images and converts them into a combine
 ---
 
 # API LIST
-## Profile APIs
+## User APIs
 ```
 GET /users/profile
 POST /users/profile

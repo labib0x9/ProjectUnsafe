@@ -14,6 +14,13 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		),
 	)
 
+	// mux.Handle(
+	// 	"GET /auth/verify/{token}",
+	// 	manager.With(
+	// 		http.HandlerFunc(),
+	// 	),
+	// )
+
 	mux.Handle(
 		"POST /auth/login",
 		manager.With(
@@ -28,12 +35,12 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 		),
 	)
 
-	mux.Handle(
-		"POST /auth/anonymous",
-		manager.With(
-			http.HandlerFunc(h.AnonLogin),
-		),
-	)
+	// mux.Handle(
+	// 	"POST /auth/anonymous",
+	// 	manager.With(
+	// 		http.HandlerFunc(h.AnonLogin),
+	// 	),
+	// )
 
 	mux.Handle(
 		"POST /auth/logout",

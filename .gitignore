@@ -1,14 +1,1 @@
 .env
-image/
-migrations/00001_create_labs_table.down.sql
-migrations/00001_create_labs_table.up.sql
-model/lab.go
-repo/lab.go
-rest/handlers/admin/list_container.go
-rest/handlers/admin/terminate_container.go
-rest/handlers/lab/*
-destroy_sql.sh
-main_temp.go
-setup_sql.sh
-temp.js
-README.md.tmp

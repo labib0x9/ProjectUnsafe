@@ -8,10 +8,26 @@ import (
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager) {
 	mux.Handle(
-		"GET /profiles/{id}",
+		"GET /users/profile",
 		manager.With(
 			http.HandlerFunc(h.GetProfile),
 			h.middlewares.Auth,
 		),
 	)
+
+	// mux.Handle(
+	// 	"GET /users/change-password",
+	// 	manager.With(
+	// 		http.HandlerFunc(),
+	// 		h.middlewares.Auth,
+	// 	),
+	// )
+
+	// mux.Handle(
+	// 	"POST /users/profile",
+	// 	manager.With(
+	// 		http.HandlerFunc(),
+	// 		h.middlewares.Auth,
+	// 	),
+	// )
 }
