@@ -19,7 +19,7 @@ func (h *Handler) RegisterRoutes(
 	)
 
 	mux.Handle(
-		"GET /auth/verify/{token}",
+		"GET /auth/verify",
 		manager.With(
 			http.HandlerFunc(h.Verify),
 		),

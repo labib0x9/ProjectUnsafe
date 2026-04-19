@@ -31,7 +31,7 @@ func (m *Mailer) SendVerificationToken(email string, token string) error {
 
 	subject := "Verify your email"
 
-	url := fmt.Sprintf("http://127.0.0.1:8080/verify?token=%s", token)
+	url := fmt.Sprintf("http://127.0.0.1:8080/auth/verify?token=%s", token)
 	body :=
 		fmt.Sprintf(`
 			<h1>Welcome To ProjectPDF</h1>

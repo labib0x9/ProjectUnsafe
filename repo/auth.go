@@ -9,9 +9,12 @@ import (
 type AuthRepository interface {
 	GetByEmail(email string) (model.User, error)
 	CreateUser(user model.User) (model.User, error)
-	CreateVerifier(verifier model.Verifier) error
 	DeleteUserById(id uuid.UUID) error
 	DeleteUserEmail(email string) error
+	SetVerified(userId uuid.UUID) error
+	CreateVerifier(verifier model.Verifier) error
+	GetTokenByHash(tokenHash string) (model.Verifier, error)
+	DeleteVerifier(id int64) error
 }
 
 type authRepo struct {
@@ -74,5 +77,26 @@ func (r *authRepo) CreateVerifier(verifier model.Verifier) error {
 	`
 
 	_, err := r.dbConn.NamedExec(query, verifier)
+	return err
+}
+
+func (r *authRepo) GetTokenByHash(tokenHash string) (model.Verifier, error) {
+	query := `select * from verifier where token_hash = $1 and expire_at > now()`
+	var verifier model.Verifier
+	if err := r.dbConn.Get(&verifier, query, tokenHash); err != nil {
+		return model.Verifier{}, err
+	}
+	return verifier, nil
+}
+
+func (r *authRepo) SetVerified(userId uuid.UUID) error {
+	query := `update users set is_verified = true where id = $1`
+	_, err := r.dbConn.Exec(query, userId)
+	return err
+}
+
+func (r *authRepo) DeleteVerifier(id int64) error {
+	query := `delete from verifier where id = $1`
+	_, err := r.dbConn.Exec(query, id)
 	return err
 }
