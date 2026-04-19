@@ -65,15 +65,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	verifyTokenHash, err := utils.GenerateToken(h.middlewares.Cnf.HashPepper, h.middlewares.Cnf.BcryptCost)
-	if err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		slog.Error("Signup: verify token generation failed", "error", err)
-		if err := h.authRepo.DeleteUserById(createdUser.Id); err != nil {
-			slog.Error("Signup: delete user failed", "error", err, "email", createdUser.Email, "id", createdUser.Id)
-		}
-		return
-	}
+	verifyToken, verifyTokenHash := utils.GenerateToken()
 
 	newVerifier := model.Verifier{
 		UserId: createdUser.Id,
@@ -91,7 +83,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// send verification
-	if err := h.mailer.SendVerificationToken(newUser.Email, verifyTokenHash); err != nil {
+	if err := h.mailer.SendVerificationToken(newUser.Email, verifyToken); err != nil {
 		utils.SendJson(w, "user created, request for resend verification", http.StatusCreated)
 		slog.Error("Signup: send verification token failed", "error", err, "email", createdUser.Email, "id", createdUser.Id)
 		return

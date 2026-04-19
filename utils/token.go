@@ -1,6 +1,15 @@
 package utils
 
-func GenerateToken(pepper string, cost int) (string, error) {
-	uuid := GenerateRandomID().String()
-	return GenerateHash(uuid, pepper, cost)
+import (
+	"crypto/sha256"
+	"encoding/hex"
+
+	"github.com/google/uuid"
+)
+
+func GenerateToken() (string, string) {
+	token := uuid.NewString()
+	shaHash := sha256.Sum256([]byte(token))
+	hash := hex.EncodeToString(shaHash[:])
+	return token, hash
 }
