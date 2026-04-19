@@ -1,13 +1,17 @@
 package repo
 
 import (
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/labib0x9/ProjectUnsafe/model"
 )
 
 type AuthRepository interface {
 	GetByEmail(email string) (model.User, error)
-	Create(user model.User) (model.User, error)
+	CreateUser(user model.User) (model.User, error)
+	CreateVerifier(verifier model.Verifier) error
+	DeleteUserById(id uuid.UUID) error
+	DeleteUserEmail(email string) error
 }
 
 type authRepo struct {
@@ -29,10 +33,11 @@ func (r *authRepo) GetByEmail(email string) (model.User, error) {
 	return user, nil
 }
 
-func (r *authRepo) Create(user model.User) (model.User, error) {
+func (r *authRepo) CreateUser(user model.User) (model.User, error) {
 	query := `insert into 
 		users(username, fullname, email, password_hash, is_verified, role, profile_pic, deleted_at)
 		values(:username, :fullname, :email, :password_hash, :is_verified, :role, :profile_pic, :deleted_at)
+		returning id, username, fullname, email, is_verified, role, created_at
 	`
 
 	rows, err := r.dbConn.NamedQuery(query, user)
@@ -48,4 +53,26 @@ func (r *authRepo) Create(user model.User) (model.User, error) {
 		}
 	}
 	return created, nil
+}
+
+func (r *authRepo) DeleteUserById(id uuid.UUID) error {
+	query := `delete from users where id = $1`
+	_, err := r.dbConn.Exec(query, id)
+	return err
+}
+
+func (r *authRepo) DeleteUserEmail(email string) error {
+	query := `delete from users where email = $1`
+	_, err := r.dbConn.Exec(query, email)
+	return err
+}
+
+func (r *authRepo) CreateVerifier(verifier model.Verifier) error {
+	query := `insert into 
+		verifier(user_id, token_hash)
+		values(:user_id, :token_hash)
+	`
+
+	_, err := r.dbConn.NamedExec(query, verifier)
+	return err
 }

@@ -14,6 +14,7 @@ func (h *Handler) RegisterRoutes(
 		"POST /auth/signup",
 		manager.With(
 			http.HandlerFunc(h.Signup),
+			h.middlewares.MaxBody1MB,
 		),
 	)
 
@@ -21,6 +22,13 @@ func (h *Handler) RegisterRoutes(
 		"GET /auth/verify/{token}",
 		manager.With(
 			http.HandlerFunc(h.Verify),
+		),
+	)
+
+	mux.Handle(
+		"GET /auth/resend-verify",
+		manager.With(
+			http.HandlerFunc(h.ResendVerify),
 		),
 	)
 

@@ -35,8 +35,11 @@ type Config struct {
 	BcryptCost int
 	HashPepper string
 
-	DBConfig    *DbConfig
-	RedisConfig *RedisConfig
+	DBConfig     *DbConfig
+	RedisConfig  *RedisConfig
+	MailtrapUser string
+	MailtrapPass string
+	Email        string
 }
 
 var configuration *Config
@@ -141,6 +144,21 @@ func loadConfig() {
 	// 	log.Panic("REDIS_PASS")
 	// }
 
+	email := os.Getenv("EMAIL")
+	if email == "" {
+		log.Panic("EMAIL")
+	}
+
+	mailtrapUser := os.Getenv("MAILTRAP_USERNAME")
+	if mailtrapUser == "" {
+		log.Panic("MAILTRAP_USERNAME")
+	}
+
+	mailtrapPass := os.Getenv("MAILTRAP_PASSWORD")
+	if mailtrapPass == "" {
+		log.Panic("MAILTRAP_PASSWORD")
+	}
+
 	configuration = &Config{
 		Version:    version,
 		Port:       port,
@@ -163,6 +181,9 @@ func loadConfig() {
 			// User: redisUser,
 			// Pass: redisPass,
 		},
+		Email:        email,
+		MailtrapUser: mailtrapUser,
+		MailtrapPass: mailtrapPass,
 	}
 }
 

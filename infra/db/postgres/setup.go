@@ -96,6 +96,31 @@ func (p *PostgreSQL) runMigrations(cnf *config.DbConfig) error {
 	return nil
 }
 
+// step = 0, all
+func (p *PostgreSQL) RollbackMigrations(cnf *config.DbConfig, steps int) error {
+	dbSource := newConnectionString(cnf)
+	appDB, err := sql.Open("postgres", dbSource)
+	if err != nil {
+		return err
+	}
+	defer appDB.Close()
+
+	driver, err := postgres.WithInstance(appDB, &postgres.Config{})
+	if err != nil {
+		return err
+	}
+
+	m, err := migrate.NewWithDatabaseInstance("file://migrations", "postgres", driver)
+	if err != nil {
+		return err
+	}
+
+	if steps == 0 {
+		return m.Down()
+	}
+	return m.Steps(-steps)
+}
+
 func (p *PostgreSQL) SetupAndConnection(cnf *config.DbConfig) *sqlx.DB {
 	if err := p.Setup(cnf); err != nil {
 		panic(err)

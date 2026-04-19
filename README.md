@@ -39,9 +39,20 @@ ProjectPDF is a API service that accepts images and converts them into a combine
 - Graceful shutdown
 - Image verification(corrupt and malicious files, wrong MIME)
 
+- mailtrap is used to check account verification.
+
 ---
 
 # API LIST
+## Auth APIs
+```
+POST /auth/login
+POST /auth/logout
+POST /auth/signup
+POST /auth/reset-password
+GET /auth/verify/{token}
+```
+
 ## User APIs
 ```
 GET /users/profile
@@ -54,15 +65,6 @@ POST /users/change-password
 GET /pdfs
 GET /pdfs/{id}/download
 DELETE /pdfs/{id}
-```
-
-## Auth APIs
-```
-POST /auth/login
-POST /auth/logout
-POST /auth/signup
-POST /auth/reset-password
-GET /auth/verify/{token}
 ```
 
 ## Convert APIs
