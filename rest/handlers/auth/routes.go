@@ -39,6 +39,7 @@ func (h *Handler) RegisterRoutes(
 		"POST /auth/login",
 		manager.With(
 			http.HandlerFunc(h.Login),
+			h.middlewares.MaxBody1MB,
 		),
 	)
 

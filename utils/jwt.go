@@ -1,72 +1,58 @@
 package utils
 
 import (
-	"github.com/golang-jwt/jwt"
+	"errors"
+	"fmt"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/labib0x9/ProjectUnsafe/model"
 )
 
-type Header struct {
-	Alg string `json:"alg"`
-	Typ string `json:"typ"`
-}
-
 type Payload struct {
-	Sub       string `json:"sub"`
-	FirstName string `json:"first_name"`
-	Role      string `json:"role"`
+	Fullname string `json:"full_name"`
+	Email    string `json:"email"`
+	Role     string `json:"role"`
+	jwt.RegisteredClaims
 }
 
-func CreateJWT(jwtSecretKey []byte, data Payload) string {
-	claims := jwt.MapClaims{
-		"sub":        data.Sub,
-		"first_name": data.FirstName,
-		"role":       data.Role,
+func CreateJWT(jwtSecretKey []byte, data model.User) (string, error) {
+	claims := Payload{
+		Fullname: data.Fullname,
+		Email:    data.Email,
+		Role:     data.Role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   data.Id.String(),
+			Issuer:    "projectpdf",
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtSecretKey)
-	if err != nil {
-		return ""
-	}
-	return tokenString
+	return token.SignedString(jwtSecretKey)
 }
 
-func VerifyJWT(jwtSecretKey []byte, tokenStr string) (Payload, bool) {
-	token, err := jwt.Parse(
+func VerifyJWT(jwtSecretKey []byte, tokenStr string) (Payload, error) {
+	token, err := jwt.ParseWithClaims(
 		tokenStr,
+		&Payload{},
 		func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("wrong signing method: %v", t.Header["alg"])
+			}
 			return jwtSecretKey, nil
 		},
 	)
+
 	if err != nil {
-		return Payload{}, false
-	}
-	if token.Valid == false {
-		return Payload{}, false
+		return Payload{}, err
 	}
 
-	claims, ok := token.Claims.(jwt.MapClaims)
+	claims, ok := token.Claims.(*Payload)
 	if !ok {
-		return Payload{}, false
+		return Payload{}, errors.New("invalid claims")
 	}
 
-	sub, ok := claims["sub"].(string)
-	if !ok {
-		return Payload{}, false
-	}
-	firstName, ok := claims["first_name"].(string)
-	if !ok {
-		return Payload{}, false
-	}
-	role, ok := claims["role"].(string)
-	if !ok {
-		return Payload{}, false
-	}
-
-	data := Payload{
-		Sub:       sub,
-		FirstName: firstName,
-		Role:      role,
-	}
-
-	return data, true
+	return *claims, nil
 }

@@ -33,9 +33,8 @@ func NewServer(
 	}
 }
 
-func (s *Server) Start(cnf *config.Config) {
-	redisClient := redis.Setup(cnf.RedisConfig)
-	defer redisClient.Close()
+func (s *Server) Start(redisClient *redis.Redis, cnf *config.Config) {
+	
 
 	rateLimiter := middleware.NewRateLimiter(redisClient, 2, 1)
 

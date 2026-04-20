@@ -1,10 +1,16 @@
 package repo
 
 import (
+	"context"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/labib0x9/ProjectUnsafe/infra/cache/redis"
 	"github.com/labib0x9/ProjectUnsafe/model"
 )
+
+var ctx = context.Background()
 
 type AuthRepository interface {
 	GetByEmail(email string) (model.User, error)
@@ -16,15 +22,22 @@ type AuthRepository interface {
 	GetVerifierByHash(tokenHash string) (model.Verifier, error)
 	DeleteVerifier(id int64) error
 	GetVerifierById(userId uuid.UUID) (model.Verifier, error)
+	Set(key string, value string, expire time.Duration) error
+	Get(key string) (string, error)
 }
 
 type authRepo struct {
 	dbConn *sqlx.DB
+	cache  *redis.Redis
 }
 
-func NewAuthRepository(dbConn *sqlx.DB) AuthRepository {
+func NewAuthRepository(
+	dbConn *sqlx.DB,
+	cache *redis.Redis,
+) AuthRepository {
 	return &authRepo{
 		dbConn: dbConn,
+		cache:  cache,
 	}
 }
 
@@ -109,4 +122,17 @@ func (r *authRepo) DeleteVerifier(id int64) error {
 	query := `delete from verifier where id = $1`
 	_, err := r.dbConn.Exec(query, id)
 	return err
+}
+
+func (r *authRepo) Set(key string, value string, expire time.Duration) error {
+	return r.cache.Client.Set(
+		ctx,
+		key,
+		value,
+		expire,
+	).Err()
+}
+
+func (r *authRepo) Get(key string) (string, error) {
+	return r.cache.Client.Get(ctx, key).Result()
 }

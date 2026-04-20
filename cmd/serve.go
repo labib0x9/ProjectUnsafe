@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labib0x9/ProjectUnsafe/config"
+	"github.com/labib0x9/ProjectUnsafe/infra/cache/redis"
 	"github.com/labib0x9/ProjectUnsafe/infra/db/postgres"
 	"github.com/labib0x9/ProjectUnsafe/repo"
 	"github.com/labib0x9/ProjectUnsafe/rest"
@@ -20,7 +21,10 @@ func Serve() {
 	dbConn := postgresConn.SetupAndConnection(cnf.DBConfig)
 	defer dbConn.Close()
 
-	authRepo := repo.NewAuthRepository(dbConn)
+	redisClient := redis.Setup(cnf.RedisConfig)
+	defer redisClient.Close()
+
+	authRepo := repo.NewAuthRepository(dbConn, redisClient)
 	adminRepo := repo.NewAdminRepository(dbConn)
 	userRepo := repo.NewUserRepository(dbConn)
 
@@ -38,5 +42,5 @@ func Serve() {
 		userHandler,
 	)
 
-	server.Start(cnf)
+	server.Start(redisClient, cnf)
 }
