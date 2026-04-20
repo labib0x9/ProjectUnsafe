@@ -17,7 +17,7 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request) {
 	}
 
 	hash := utils.GetTokenHash(token)
-	verifier, err := h.authRepo.GetTokenByHash(hash)
+	verifier, err := h.authRepo.GetVerifierByHash(hash)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			http.Error(w, "token expired or invalid", http.StatusGone)

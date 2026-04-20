@@ -51,6 +51,7 @@ POST /auth/logout
 POST /auth/signup
 POST /auth/reset-password
 GET /auth/verify?token=
+POST /auth/verify/resend
 ```
 
 ## User APIs

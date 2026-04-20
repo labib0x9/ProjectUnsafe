@@ -19,6 +19,7 @@ func (m *Manager) Use(middlewares ...Middleware) {
 	m.globalMiddlewares = append(m.globalMiddlewares, middlewares...)
 }
 
+// middlewares are wrapped as queue, First Come First Server (FCFS)
 func (m *Manager) With(next http.Handler, middlewares ...Middleware) http.Handler {
 	// for _, middle := range middlewares {
 	// 	next = middle(next)

@@ -26,9 +26,12 @@ func (h *Handler) RegisterRoutes(
 	)
 
 	mux.Handle(
-		"GET /auth/resend-verify",
+		"POST /auth/verify/resend",
 		manager.With(
 			http.HandlerFunc(h.ResendVerify),
+			h.middlewares.MaxBody1MB,
+			h.middlewares.OneTimePerEmail,
+			h.middlewares.BlockIP,
 		),
 	)
 
