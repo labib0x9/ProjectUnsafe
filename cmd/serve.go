@@ -28,7 +28,7 @@ func Serve() {
 	adminRepo := repo.NewAdminRepository(dbConn)
 	userRepo := repo.NewUserRepository(dbConn)
 
-	middlewares := middleware.NewMiddlewares(cnf)
+	middlewares := middleware.NewMiddlewares(cnf, authRepo)
 	validate := validator.New()
 	mailer := mailer.NewMailer(cnf)
 
