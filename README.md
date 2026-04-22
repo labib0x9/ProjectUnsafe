@@ -49,9 +49,11 @@ ProjectPDF is a API service that accepts images and converts them into a combine
 POST /auth/login
 GET /auth/logout
 POST /auth/signup
-POST /auth/reset-password
 GET /auth/verify?token=
 POST /auth/verify/resend
+POST /auth/forgot-password
+POST /auth/reset
+GET /auth/reset?token=
 ```
 
 ## User APIs

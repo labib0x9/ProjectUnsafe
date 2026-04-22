@@ -44,9 +44,32 @@ func (h *Handler) RegisterRoutes(
 	)
 
 	mux.Handle(
-		"POST /auth/reset-password",
+		"POST /auth/forgot-password",
 		manager.With(
-			http.HandlerFunc(h.Reset),
+			http.HandlerFunc(h.ForgotPassword),
+			h.middlewares.MaxBody1MB,
+			h.middlewares.OneTimePerEmail,
+			h.middlewares.BlockIP,
+		),
+	)
+
+	mux.Handle(
+		"POST /auth/reset",
+		manager.With(
+			http.HandlerFunc(h.ResetPasswordPost),
+			h.middlewares.MaxBody1MB,
+			h.middlewares.OneTimePerEmail,
+			h.middlewares.BlockIP,
+		),
+	)
+
+	mux.Handle(
+		"GET /auth/reset",
+		manager.With(
+			http.HandlerFunc(h.ResetPasswordGet),
+			h.middlewares.MaxBody1MB,
+			h.middlewares.OneTimePerEmail,
+			h.middlewares.BlockIP,
 		),
 	)
 
