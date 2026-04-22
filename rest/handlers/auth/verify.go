@@ -17,7 +17,7 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request) {
 	}
 
 	hash := utils.GetTokenHash(token)
-	verifier, err := h.authRepo.GetVerifierByHash(hash)
+	verifier, err := h.verifierRepo.GetByHash(hash)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			http.Error(w, "token expired or invalid", http.StatusGone)
@@ -35,7 +35,7 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.authRepo.DeleteVerifier(verifier.Id); err != nil {
+	if err := h.verifierRepo.Delete(verifier.Id); err != nil {
 		slog.Error("Verify: failed to delete verifier", "error", err, "id", verifier.Id)
 	}
 

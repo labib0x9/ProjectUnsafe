@@ -24,15 +24,18 @@ func Serve() {
 	redisClient := redis.Setup(cnf.RedisConfig)
 	defer redisClient.Close()
 
-	authRepo := repo.NewAuthRepository(dbConn, redisClient)
+	authRepo := repo.NewAuthRepository(dbConn)
 	adminRepo := repo.NewAdminRepository(dbConn)
 	userRepo := repo.NewUserRepository(dbConn)
+	verifierRepo := repo.NewVerifierRepo(dbConn)
+	cacheRepo := repo.NewCacheRepo(redisClient)
+	reseterRepo := repo.NewReseterRepo(dbConn)
 
-	middlewares := middleware.NewMiddlewares(cnf, authRepo)
+	middlewares := middleware.NewMiddlewares(cnf, cacheRepo)
 	validate := validator.New()
 	mailer := mailer.NewMailer(cnf)
 
-	authHandler := auth.NewHandler(authRepo, middlewares, validate, mailer)
+	authHandler := auth.NewHandler(authRepo, verifierRepo, cacheRepo, reseterRepo, middlewares, validate, mailer)
 	adminHandler := admin.NewHandler(adminRepo, middlewares)
 	userHandler := user.NewHandler(userRepo, middlewares)
 

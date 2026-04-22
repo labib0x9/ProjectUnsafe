@@ -6,13 +6,13 @@ import (
 )
 
 type Middlewares struct {
-	Cnf      *config.Config
-	authRepo repo.AuthRepository
+	Cnf       *config.Config
+	cacheRepo repo.CacheRepo
 }
 
-func NewMiddlewares(cnf *config.Config, authRepo repo.AuthRepository) *Middlewares {
+func NewMiddlewares(cnf *config.Config, cacheRepo repo.CacheRepo) *Middlewares {
 	return &Middlewares{
-		Cnf:      cnf,
-		authRepo: authRepo,
+		Cnf:       cnf,
+		cacheRepo: cacheRepo,
 	}
 }

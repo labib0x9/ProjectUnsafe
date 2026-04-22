@@ -22,7 +22,7 @@ func (h *Handler) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	oldToken, err := h.authRepo.GetResetTokenByToken(token)
+	oldToken, err := h.reseterRepo.GetByToken(token)
 	if err != nil {
 		slog.Warn("ResetPasswordGet: email not exists")
 		http.Error(w, "expired or invalid token", http.StatusGone)
@@ -48,14 +48,14 @@ func (h *Handler) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	oldToken, err := h.authRepo.GetResetTokenByToken(req.Token)
+	oldToken, err := h.reseterRepo.GetByToken(req.Token)
 	if err != nil {
 		slog.Warn("ResetPasswordPost: struct validation failed", "error", err)
 		http.Error(w, "invalid or expired token", http.StatusGone)
 		return
 	}
 
-	user, err := h.authRepo.GetUserById(oldToken.UserId)
+	user, err := h.authRepo.GetById(oldToken.UserId)
 	if err != nil {
 		slog.Warn("ResetPasswordPost: struct validation failed", "error", err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -69,13 +69,13 @@ func (h *Handler) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.authRepo.UpdateUserPassword(user.Id, passHash); err != nil {
+	if err := h.authRepo.UpdatePassword(user.Id, passHash); err != nil {
 		slog.Warn("ResetPasswordPost: struct validation failed", "error", err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	if err := h.authRepo.DeleteTokenById(oldToken.Id); err != nil {
+	if err := h.reseterRepo.DeleteById(oldToken.Id); err != nil {
 		slog.Warn("ResetPasswordPost: struct validation failed", "error", err)
 	}
 

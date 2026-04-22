@@ -40,7 +40,7 @@ func (m *Middlewares) Auth(next http.Handler) http.Handler {
 		}
 
 		key := "token_blocklist:" + tokenStr
-		if _, err := m.authRepo.Get(key); err == nil {
+		if _, err := m.cacheRepo.Get(key); err == nil {
 			http.Error(w, "blocklist token", http.StatusUnauthorized)
 			slog.Warn("Auth Middleware: token on blocklist", "Addr", r.RemoteAddr)
 			return

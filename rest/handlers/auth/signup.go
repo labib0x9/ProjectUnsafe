@@ -58,7 +58,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 		IsVerified:   false,
 	}
 
-	createdUser, err := h.authRepo.CreateUser(newUser)
+	createdUser, err := h.authRepo.Create(newUser)
 	if err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		slog.Error("Signup: create user failed", "error", err, "email", newUser.Email)
@@ -72,11 +72,11 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 		Token:  verifyTokenHash,
 	}
 
-	if err = h.authRepo.CreateVerifier(newVerifier); err != nil {
+	if err = h.verifierRepo.Create(newVerifier); err != nil {
 		// need to think...
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		slog.Error("Signup: create verifier failed", "error", err, "email", createdUser.Email, "id", createdUser.Id)
-		if err := h.authRepo.DeleteUserEmail(newUser.Email); err != nil {
+		if err := h.authRepo.DeleteByEmail(newUser.Email); err != nil {
 			slog.Error("Signup: delete user failed", "error", err, "email", createdUser.Email, "id", createdUser.Id)
 		}
 		return

@@ -44,7 +44,7 @@ func (h *Handler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var reseter model.Reseter
-	oldToken, err := h.authRepo.GetResetToken(user.Id)
+	oldToken, err := h.reseterRepo.GetById(user.Id)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		slog.Error("ForgotPassword: get reset token failed", "error", err, "email", req.Email)
 		http.Error(w, "Internal Server error", http.StatusInternalServerError)
@@ -59,7 +59,7 @@ func (h *Handler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 			Token:  resetToken,
 			UserId: user.Id,
 		}
-		if err := h.authRepo.CreateResetToken(reseter); err != nil {
+		if err := h.reseterRepo.Create(reseter); err != nil {
 			slog.Error("ForgotPassword: Create reset token failed", "error", err, "email", req.Email)
 			http.Error(w, "Internal Server error", http.StatusInternalServerError)
 			return

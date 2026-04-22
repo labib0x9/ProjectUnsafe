@@ -8,22 +8,31 @@ import (
 )
 
 type Handler struct {
-	middlewares *middleware.Middlewares
-	authRepo    repo.AuthRepository
-	validate    *validator.Validate
-	mailer      *mailer.Mailer
+	middlewares  *middleware.Middlewares
+	authRepo     repo.AuthRepository
+	verifierRepo repo.VerifierRepo
+	cacheRepo    repo.CacheRepo
+	reseterRepo  repo.ReseterRepo
+	validate     *validator.Validate
+	mailer       *mailer.Mailer
 }
 
 func NewHandler(
 	authRepo repo.AuthRepository,
+	verifierRepo repo.VerifierRepo,
+	cacheRepo repo.CacheRepo,
+	reseterRepo repo.ReseterRepo,
 	middlewares *middleware.Middlewares,
 	validate *validator.Validate,
 	mailer *mailer.Mailer,
 ) *Handler {
 	return &Handler{
-		authRepo:    authRepo,
-		middlewares: middlewares,
-		validate:    validate,
-		mailer:      mailer,
+		authRepo:     authRepo,
+		verifierRepo: verifierRepo,
+		cacheRepo:    cacheRepo,
+		reseterRepo:  reseterRepo,
+		middlewares:  middlewares,
+		validate:     validate,
+		mailer:       mailer,
 	}
 }

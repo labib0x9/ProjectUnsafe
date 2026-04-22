@@ -31,7 +31,7 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.authRepo.Set(key, "1", expire); err != nil {
+	if err := h.cacheRepo.Set(key, "1", expire); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		slog.Warn("Logout: failed to blocklist jwt", "Addr", r.RemoteAddr)
 		return

@@ -43,7 +43,7 @@ func (h *Handler) ResendVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	oldVerifier, err := h.authRepo.GetVerifierById(user.Id)
+	oldVerifier, err := h.verifierRepo.GetById(user.Id)
 	if err != nil {
 		if !errors.Is(err, sql.ErrNoRows) {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -51,7 +51,7 @@ func (h *Handler) ResendVerify(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		if err := h.authRepo.DeleteVerifier(oldVerifier.Id); err != nil {
+		if err := h.verifierRepo.Delete(oldVerifier.Id); err != nil {
 			slog.Error("ResendVerify: failed to delete verifier", "error", err, "id", oldVerifier.Id)
 		}
 	}
@@ -63,7 +63,7 @@ func (h *Handler) ResendVerify(w http.ResponseWriter, r *http.Request) {
 		Token:  verifyTokenHash,
 	}
 
-	if err = h.authRepo.CreateVerifier(newVerifier); err != nil {
+	if err = h.verifierRepo.Create(newVerifier); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		slog.Error("ResendVerify: create verifier failed", "error", err, "email", user.Email, "id", user.Id)
 		return
