@@ -2,11 +2,10 @@ package repo
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/labib0x9/ProjectUnsafe/model"
 )
 
 type PdfRepository interface {
-	GetProfile(id int) (model.User, error)
+	GetProfile(id int)
 }
 
 type pdfRepo struct {
@@ -14,7 +13,7 @@ type pdfRepo struct {
 }
 
 func NewPdfRepository(db *sqlx.DB) PdfRepository {
-	return &userRepo{db: db}
+	return &pdfRepo{db: db}
 }
 
-func (r *pdfRepo) GetProfile(id int) () {}
+func (r *pdfRepo) GetProfile(id int) {}

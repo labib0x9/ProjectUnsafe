@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(70)  DEFAULT '',
     is_verified   BOOLEAN       DEFAULT FALSE,
     role          VARCHAR(6)   DEFAULT 'user',
-    profile_pic   VARCHAR(256)  DEFAULT '',
     created_at    TIMESTAMP     DEFAULT NOW(),
     updated_at    TIMESTAMP     DEFAULT NOW(),
     deleted_at    TIMESTAMP

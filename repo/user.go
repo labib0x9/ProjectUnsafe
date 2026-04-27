@@ -6,22 +6,43 @@ import (
 )
 
 type UserRepository interface {
-	GetProfile(id int) (model.User, error)
+	GetProfile(id string) (model.Profile, error)
+	SetProfile(profile model.Profile) error
 }
 
 type userRepo struct {
-	db *sqlx.DB
+	dbConn *sqlx.DB
 }
 
 func NewUserRepository(db *sqlx.DB) UserRepository {
-	return &userRepo{db: db}
+	return &userRepo{dbConn: db}
 }
 
-func (r *userRepo) GetProfile(id int) (model.User, error) {
-	query := `select * from users where id = $1`
-	var user model.User
-	if err := r.db.Get(&user, query, id); err != nil {
-		return model.User{}, err
+func (r *userRepo) GetProfile(id string) (model.Profile, error) {
+	// query := `
+	// 	select
+	// 		p.user_id, u.username, p.profile_pic, u.fullname
+	// 	from profiles p
+	// 	left join users u
+	// 	on
+	// 		u.id = p.user_id
+	// 	where
+	// 	 	u.id = $1
+	// `
+	query := `select * from profiles where user_id = $1`
+	var profile model.Profile
+	if err := r.dbConn.Get(&profile, query, id); err != nil {
+		return model.Profile{}, err
 	}
-	return user, nil
+	return profile, nil
+}
+
+func (r *userRepo) SetProfile(profile model.Profile) error {
+	query := `insert into 
+		profiles(user_id, profile_pic)
+		values(:user_id, :profile_pic)
+	`
+
+	_, err := r.dbConn.NamedExec(query, profile)
+	return err
 }

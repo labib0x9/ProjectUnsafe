@@ -8,7 +8,7 @@ import (
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager) {
 	mux.Handle(
-		"GET /users/profile",
+		"GET /users/profile/me",
 		manager.With(
 			http.HandlerFunc(h.GetProfile),
 			h.middlewares.Auth,

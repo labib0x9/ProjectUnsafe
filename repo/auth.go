@@ -52,8 +52,8 @@ func (r *authRepo) GetById(id uuid.UUID) (model.User, error) {
 
 func (r *authRepo) Create(user model.User) (model.User, error) {
 	query := `insert into 
-		users(username, fullname, email, password_hash, is_verified, role, profile_pic, deleted_at)
-		values(:username, :fullname, :email, :password_hash, :is_verified, :role, :profile_pic, :deleted_at)
+		users(username, fullname, email, password_hash, is_verified, role, deleted_at)
+		values(:username, :fullname, :email, :password_hash, :is_verified, :role, :deleted_at)
 		returning id, username, fullname, email, is_verified, role, created_at
 	`
 

@@ -1,29 +1,35 @@
 package user
 
 import (
+	"log/slog"
 	"net/http"
-	"strconv"
 
+	"github.com/labib0x9/ProjectUnsafe/rest/middleware"
 	"github.com/labib0x9/ProjectUnsafe/utils"
 )
 
-type ProfileResp struct {
-	Username string
-	Photo    string
-}
-
 func (h *Handler) GetProfile(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(r.PathValue("id"))
+	id := getId(r)
+	if id == "" {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		slog.Error("GetProfile: id not found")
+		return
+	}
 	found, err := h.userRepo.GetProfile(id)
 	if err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
+		slog.Error("GetProfile: user not found", "err", err, "id", id)
 		return
 	}
 
-	profile := ProfileResp{
-		Username: found.Username,
-		Photo:    found.ProfilePic,
+	utils.SendJson(w, found, http.StatusOK)
+}
+
+func getId(r *http.Request) string {
+	claims, ok := middleware.GetClaims(r)
+	if !ok {
+		return ""
 	}
 
-	utils.SendJson(w, profile, http.StatusOK)
+	return claims.RegisteredClaims.Subject
 }

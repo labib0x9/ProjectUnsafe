@@ -35,7 +35,7 @@ func Serve() {
 	validate := validator.New()
 	mailer := mailer.NewMailer(cnf)
 
-	authHandler := auth.NewHandler(authRepo, verifierRepo, cacheRepo, reseterRepo, middlewares, validate, mailer)
+	authHandler := auth.NewHandler(authRepo, verifierRepo, cacheRepo, reseterRepo, userRepo, middlewares, validate, mailer)
 	adminHandler := admin.NewHandler(adminRepo, middlewares)
 	userHandler := user.NewHandler(userRepo, middlewares)
 

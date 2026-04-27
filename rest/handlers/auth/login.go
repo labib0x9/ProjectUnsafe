@@ -54,5 +54,8 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.SendJson(w, token, http.StatusOK)
+	utils.SendJson(w, map[string]any{
+		"token": token,
+		"id":    found.Id,
+	}, http.StatusOK)
 }

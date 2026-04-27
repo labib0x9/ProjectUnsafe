@@ -13,6 +13,7 @@ type Handler struct {
 	verifierRepo repo.VerifierRepo
 	cacheRepo    repo.CacheRepo
 	reseterRepo  repo.ReseterRepo
+	userRepo     repo.UserRepository
 	validate     *validator.Validate
 	mailer       *mailer.Mailer
 }
@@ -22,6 +23,7 @@ func NewHandler(
 	verifierRepo repo.VerifierRepo,
 	cacheRepo repo.CacheRepo,
 	reseterRepo repo.ReseterRepo,
+	userRepo repo.UserRepository,
 	middlewares *middleware.Middlewares,
 	validate *validator.Validate,
 	mailer *mailer.Mailer,
@@ -31,6 +33,7 @@ func NewHandler(
 		verifierRepo: verifierRepo,
 		cacheRepo:    cacheRepo,
 		reseterRepo:  reseterRepo,
+		userRepo:     userRepo,
 		middlewares:  middlewares,
 		validate:     validate,
 		mailer:       mailer,

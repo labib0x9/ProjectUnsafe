@@ -15,7 +15,6 @@ type User struct {
 	PasswordHash string     `json:"-"             db:"password_hash"`
 	IsVerified   bool       `json:"is_verified"   db:"is_verified"`
 	Role         string     `json:"role"          db:"role"`
-	ProfilePic   string     `json:"profile_pic"   db:"profile_pic"`
 	CreatedAt    time.Time  `json:"created_at"    db:"created_at"`
 	UpdatedAt    time.Time  `json:"updated_at"    db:"updated_at"`
 	DeletedAt    *time.Time `json:"deleted_at"    db:"deleted_at"`

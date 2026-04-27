@@ -58,7 +58,7 @@ GET /auth/reset?token=
 
 ## User APIs
 ```
-GET /users/profile
+GET /users/profile/me
 POST /users/profile
 POST /users/change-password
 ```

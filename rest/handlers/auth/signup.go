@@ -82,6 +82,20 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	profile := model.Profile{
+		UserId:     createdUser.Id,
+		ProfilePic: "",
+	}
+
+	if err = h.userRepo.SetProfile(profile); err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		slog.Error("Signup: create profile failed", "error", err, "email", createdUser.Email, "id", createdUser.Id)
+		if err := h.authRepo.DeleteByEmail(newUser.Email); err != nil {
+			slog.Error("Signup: delete user failed", "error", err, "email", createdUser.Email, "id", createdUser.Id)
+		}
+		return
+	}
+
 	// send verification
 	if err := h.mailer.SendVerificationToken(newUser.Email, verifyToken); err != nil {
 		utils.SendJson(w, "user created, request for resend verification", http.StatusCreated)
