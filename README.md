@@ -40,6 +40,7 @@ ProjectPDF is a API service that accepts images and converts them into a combine
 - Image verification(corrupt and malicious files, wrong MIME)
 
 - mailtrap is used to check account verification.
+- minio is used for Object Storage
 
 ---
 

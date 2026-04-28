@@ -5,6 +5,7 @@ import (
 	"github.com/labib0x9/ProjectUnsafe/config"
 	"github.com/labib0x9/ProjectUnsafe/infra/cache/redis"
 	"github.com/labib0x9/ProjectUnsafe/infra/db/postgres"
+	"github.com/labib0x9/ProjectUnsafe/infra/minio"
 	"github.com/labib0x9/ProjectUnsafe/repo"
 	"github.com/labib0x9/ProjectUnsafe/rest"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/admin"
@@ -23,6 +24,9 @@ func Serve() {
 
 	redisClient := redis.Setup(cnf.RedisConfig)
 	defer redisClient.Close()
+
+	minioClient := minio.Setup(cnf.MinioConfig)
+	_ = minioClient
 
 	authRepo := repo.NewAuthRepository(dbConn)
 	adminRepo := repo.NewAdminRepository(dbConn)

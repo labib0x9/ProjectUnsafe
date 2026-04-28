@@ -27,6 +27,13 @@ type RedisConfig struct {
 	User string
 }
 
+type MinioConfig struct {
+	Endpoint        string
+	AccessKeyID     string
+	SecretAccessKey string
+	BucketName      string
+}
+
 type Config struct {
 	Version    string
 	Port       int
@@ -40,6 +47,7 @@ type Config struct {
 	MailtrapUser string
 	MailtrapPass string
 	Email        string
+	MinioConfig  *MinioConfig
 }
 
 var configuration *Config
@@ -159,6 +167,26 @@ func loadConfig() {
 		log.Panic("MAILTRAP_PASSWORD")
 	}
 
+	endpoint := os.Getenv("ENDPOINT")
+	if endpoint == "" {
+		log.Panic("ENDPOINT")
+	}
+
+	accessKeyId := os.Getenv("ACCESS_KEY_ID")
+	if accessKeyId == "" {
+		log.Panic("ACCESS_KEY_ID")
+	}
+
+	secretAccessKey := os.Getenv("SECRET_ACCESS_KEY")
+	if secretAccessKey == "" {
+		log.Panic("SECRET_ACCESS_KEY")
+	}
+
+	bucketName := os.Getenv("BUCKET_NAME")
+	if bucketName == "" {
+		log.Panic("BUCKET_NAME")
+	}
+
 	configuration = &Config{
 		Version:    version,
 		Port:       port,
@@ -184,6 +212,12 @@ func loadConfig() {
 		Email:        email,
 		MailtrapUser: mailtrapUser,
 		MailtrapPass: mailtrapPass,
+		MinioConfig: &MinioConfig{
+			Endpoint:        endpoint,
+			AccessKeyID:     accessKeyId,
+			SecretAccessKey: secretAccessKey,
+			BucketName:      bucketName,
+		},
 	}
 }
 
