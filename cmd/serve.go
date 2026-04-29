@@ -10,6 +10,7 @@ import (
 	"github.com/labib0x9/ProjectUnsafe/rest"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/admin"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/auth"
+	"github.com/labib0x9/ProjectUnsafe/rest/handlers/uploader"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/user"
 	"github.com/labib0x9/ProjectUnsafe/rest/middleware"
 	"github.com/labib0x9/ProjectUnsafe/utils/mailer"
@@ -26,7 +27,6 @@ func Serve() {
 	defer redisClient.Close()
 
 	minioClient := minio.Setup(cnf.MinioConfig)
-	_ = minioClient
 
 	authRepo := repo.NewAuthRepository(dbConn)
 	adminRepo := repo.NewAdminRepository(dbConn)
@@ -34,6 +34,7 @@ func Serve() {
 	verifierRepo := repo.NewVerifierRepo(dbConn)
 	cacheRepo := repo.NewCacheRepo(redisClient)
 	reseterRepo := repo.NewReseterRepo(dbConn)
+	uploaderRepo := repo.NewUploaderRepository(&minioClient, cnf.MinioConfig)
 
 	middlewares := middleware.NewMiddlewares(cnf, cacheRepo)
 	validate := validator.New()
@@ -42,11 +43,13 @@ func Serve() {
 	authHandler := auth.NewHandler(authRepo, verifierRepo, cacheRepo, reseterRepo, userRepo, middlewares, validate, mailer)
 	adminHandler := admin.NewHandler(adminRepo, middlewares)
 	userHandler := user.NewHandler(userRepo, middlewares)
+	uploaderHandler := uploader.NewHandler(uploaderRepo, validate, middlewares)
 
 	server := rest.NewServer(
 		authHandler,
 		adminHandler,
 		userHandler,
+		uploaderHandler,
 	)
 
 	server.Start(redisClient, cnf)

@@ -4,7 +4,7 @@ backend:
 	go run main.go
 
 frontend:
-	cd ../PUF-CLAUDE-GIT && npm run dev
+# 	cd ../PUF-CLAUDE-GIT && npm run dev
 
 run:
 	@echo "► Starting services..."

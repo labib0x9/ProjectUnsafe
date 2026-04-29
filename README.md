@@ -64,6 +64,11 @@ POST /users/profile
 POST /users/change-password
 ```
 
+## Upload APIs
+```
+POST /uploads
+```
+
 ## PDFs APIs
 ```
 GET /pdfs
