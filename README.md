@@ -67,13 +67,15 @@ POST /users/change-password
 ## Upload APIs
 ```
 POST /uploads
+GET /uploads/{key}/status
 ```
 
-## PDFs APIs
+## GIFs APIs
 ```
-GET /pdfs
-GET /pdfs/{id}/download
-DELETE /pdfs/{id}
+GET /gifs
+GET /gifs/{id}
+GET /gifs/{id}/download
+DELETE /gifs/{id}
 ```
 
 ## Convert APIs
@@ -86,11 +88,6 @@ GET /convert/status/{jobId}
 ```
 GET /admin/users
 DELETE /admin/users/{id}
-POST /container/{id}/down
-POST /container/{id}/up
-GET /jobs
-POST /jobs/{id}/status
-POST /jobs/{id}/down
 ```
 
 ```

@@ -10,6 +10,7 @@ import (
 	"github.com/labib0x9/ProjectUnsafe/rest"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/admin"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/auth"
+	"github.com/labib0x9/ProjectUnsafe/rest/handlers/converter"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/uploader"
 	"github.com/labib0x9/ProjectUnsafe/rest/handlers/user"
 	"github.com/labib0x9/ProjectUnsafe/rest/middleware"
@@ -44,12 +45,14 @@ func Serve() {
 	adminHandler := admin.NewHandler(adminRepo, middlewares)
 	userHandler := user.NewHandler(userRepo, middlewares)
 	uploaderHandler := uploader.NewHandler(uploaderRepo, validate, middlewares)
+	converterHandler := converter.NewHandler(cacheRepo, validate, middlewares)
 
 	server := rest.NewServer(
 		authHandler,
 		adminHandler,
 		userHandler,
 		uploaderHandler,
+		converterHandler,
 	)
 
 	server.Start(redisClient, cnf)
